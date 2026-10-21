@@ -1,0 +1,6 @@
+{
+  "version": "1.0.1",
+  "date": "2026-10-21",
+  "notes_zh": "新增版本更新提醒：打开卡片时自动检查最新版，有新版本会弹窗说明，并可一键复制更新命令。",
+  "notes_en": "Added update reminders: the card now auto-checks for new versions on open, pops up with release notes, and offers one-click copy of the update command."
+}

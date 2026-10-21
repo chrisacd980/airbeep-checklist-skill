@@ -170,6 +170,8 @@
   .modal-box.info { border-color: var(--accent); }
   .modal-box.info h3 { color: var(--accent); }
   .modal-box.info .modal-icon { color: var(--accent); }
+  /* 版本更新弹窗的更新说明区 */
+  .um-notes { text-align:left; background:#f6f8fa; border:1px solid #e2e8f0; border-radius:8px; padding:10px 12px; font-size:13px; color:#343a40; line-height:1.65; margin:0 0 14px; }
   /* 小科普里的粗体红字提醒 */
   .tips li.devwarn-red { background:#fdecea; border-left-color:#e74c3c; color:#c0392b; font-weight:700; }
   .tips li.devwarn-red .step { color:#c0392b; }
@@ -339,7 +341,13 @@ winget install AppleiTunes</span></div>
       creditTitle: "💡 致谢",
       creditBody: "感谢 AirBeep 开发团队开源，本人只是在原作者成果上添加卡片式操作外壳。",
       creditOk: "知道了",
-      creditBox: "💡 <b>致谢：</b>感谢 AirBeep 开发团队开源，本操作界面仅在其原创成果之上添加了卡片式操作外壳。"
+      creditBox: "💡 <b>致谢：</b>感谢 AirBeep 开发团队开源，本操作界面仅在其原创成果之上添加了卡片式操作外壳。",
+      updateTitle: "🎉 发现新版本",
+      updateBody: (v, date) => `AirBeep 操作检查卡有新版本 <b>v${v}</b>（${date}），建议更新以获得最新功能与修复。`,
+      updateOk: "⬆️ 立即更新（复制命令）",
+      updateLater: "稍后再说",
+      updateCopied: "✅ 更新命令已复制——把它粘贴到你的本地智能体对话里，即可自动完成升级。",
+      updateCmd: "curl -fsSL https://raw.githubusercontent.com/chrisacd980/airbeep-checklist-skill/main/install.sh | bash"
     },
     en: {
       title: "AirBeep Call Tone-Free · Test Card",
@@ -393,7 +401,13 @@ winget install AppleiTunes</span></div>
       creditTitle: "💡 Credits",
       creditBody: "Thanks to the AirBeep development team for open-sourcing; I only added a card-style operation shell on top of the original author's work.",
       creditOk: "Got it",
-      creditBox: "💡 <b>Credits:</b> Thanks to the AirBeep development team for open-sourcing; this operation interface only adds a card-style operation shell on top of their original work."
+      creditBox: "💡 <b>Credits:</b> Thanks to the AirBeep development team for open-sourcing; this operation interface only adds a card-style operation shell on top of their original work.",
+      updateTitle: "🎉 New Version Available",
+      updateBody: (v, date) => `A new version of the AirBeep checklist is available: <b>v${v}</b> (${date}). Updating is recommended for the latest features and fixes.`,
+      updateOk: "⬆️ Update Now (copy command)",
+      updateLater: "Later",
+      updateCopied: "✅ Update command copied — paste it into your local agent chat to upgrade automatically.",
+      updateCmd: "curl -fsSL https://raw.githubusercontent.com/chrisacd980/airbeep-checklist-skill/main/install.sh | bash"
     }
   };
 
@@ -411,6 +425,59 @@ winget install AppleiTunes</span></div>
   let supportVersion = null;
   let curInfo = { key: "default", args: {} };
   let curTip = -1;
+  let lastUpdate = null;
+
+  // ===== 版本更新自动检查（远端 version.json 比对，发现新版本弹窗提醒）=====
+  const LOCAL_VERSION = "1.0.0";
+  const VERSION_URL = "https://raw.githubusercontent.com/chrisacd980/airbeep-checklist-skill/main/version.json";
+
+  function cmpVer(a, b) { // >0 表示 a 比 b 新
+    const pa = String(a).split(".").map(n => parseInt(n, 10) || 0);
+    const pb = String(b).split(".").map(n => parseInt(n, 10) || 0);
+    for (let i = 0; i < Math.max(pa.length, pb.length); i++) {
+      const d = (pa[i] || 0) - (pb[i] || 0);
+      if (d) return d;
+    }
+    return 0;
+  }
+
+  function checkUpdate() {
+    try { if (sessionStorage.getItem("airbeep-upd-dismissed") === LOCAL_VERSION) return; } catch (e) { /* file:// 等场景忽略 */ }
+    fetch(VERSION_URL + "?t=" + Date.now())
+      .then(r => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+      .then(d => { if (d && d.version && cmpVer(d.version, LOCAL_VERSION) > 0) showUpdate(d); })
+      .catch(() => { /* 离线或拉取失败：静默跳过，不打扰用户 */ });
+  }
+
+  function renderUpdateModal() {
+    const d = lastUpdate;
+    document.getElementById("um-title").textContent = L.updateTitle;
+    document.getElementById("um-body").innerHTML = L.updateBody(d.version, d.date || "");
+    document.getElementById("um-notes").textContent = lang === "zh" ? (d.notes_zh || "") : (d.notes_en || "");
+    document.getElementById("um-cmd").textContent = L.updateCmd;
+    document.getElementById("um-ok").textContent = L.updateOk;
+    document.getElementById("um-later").textContent = L.updateLater;
+  }
+
+  function showUpdate(d) {
+    lastUpdate = d;
+    renderUpdateModal();
+    document.getElementById("updateModal").classList.add("show");
+    // 惰性绑定按钮（弹窗 DOM 在脚本之后，须在显示时绑定）
+    document.getElementById("um-later").onclick = () => {
+      document.getElementById("updateModal").classList.remove("show");
+      try { sessionStorage.setItem("airbeep-upd-dismissed", LOCAL_VERSION); } catch (e) {}
+    };
+    document.getElementById("um-ok").onclick = () => {
+      const done = () => { toast(L.updateCopied); document.getElementById("updateModal").classList.remove("show");
+        try { sessionStorage.setItem("airbeep-upd-dismissed", LOCAL_VERSION); } catch (e) {} };
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(L.updateCmd).then(done).catch(done);
+      } else { done(); }
+    };
+  }
+
+  setTimeout(checkUpdate, 900);
 
   let toastTimer = null;
   function toast(msg) {
@@ -654,6 +721,9 @@ winget install AppleiTunes</span></div>
       document.getElementById("ec-ok").textContent = L.confirmOk;
       document.getElementById("ec-cancel").textContent = L.confirmCancel;
     }
+    if (document.getElementById("updateModal") && document.getElementById("updateModal").classList.contains("show") && lastUpdate) {
+      renderUpdateModal();
+    }
     paintAll();
     updateProgress();
     renderInfo();
@@ -693,5 +763,20 @@ winget install AppleiTunes</span></div>
         <button id="ec-ok" class="btn-ok"></button>
       </div>
     </div>
+  </div>
+  <!-- 版本更新提醒弹窗（自动检查远端 version.json） -->
+  <div id="updateModal" class="modal-overlay">
+    <div class="modal-box info">
+      <div class="modal-icon">🎉</div>
+      <h3 id="um-title"></h3>
+      <p id="um-body"></p>
+      <div class="um-notes" id="um-notes"></div>
+      <div class="codeblock" id="um-cmd"></div>
+      <div class="modal-btns">
+        <button id="um-later" class="btn-cancel"></button>
+        <button id="um-ok" class="btn-ok"></button>
+      </div>
+    </div>
+  </div>
 </body>
 </html>
