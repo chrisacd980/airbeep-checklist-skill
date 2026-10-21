@@ -3,10 +3,7 @@
 #  AirBeep 技能一键安装器 / One-line installer for the AirBeep skill
 #  用法 / Usage:
 #    curl -fsSL https://raw.githubusercontent.com/chrisacd980/airbeep-checklist-skill/main/install.sh | bash
-#  适配任意本地智能体（具备终端/代码执行能力）：
-#    WorkBuddy · CodeBuddy · Claude Code · Cursor · 通义灵码 · Aider 等
-#  纯云端聊天机器人（如豆包网页版 / Kimi 网页版）无法执行 Shell，
-#  但可按 README 手动克隆仓库使用卡片与脚本。
+#  适配任意本地智能体（具备终端/代码执行能力），自动探测其技能目录。
 # ==============================================================================
 set -euo pipefail
 
@@ -32,10 +29,14 @@ if [ -d "$HOME/.cursor/skills" ];     then TARGET="$HOME/.cursor/skills"; fi
 if [ -d "$HOME/.qwen/skills" ];       then TARGET="$HOME/.qwen/skills"; fi
 if [ -d "$HOME/.aider/skills" ];      then TARGET="$HOME/.aider/skills"; fi
 
-# 兜底：使用 WorkBuddy 路径（最通用）/ fallback to the most common path
+# 兜底：未探测到已知技能目录时，装到中性目录并提示 / fallback when no known skills dir found
 if [ -z "$TARGET" ]; then
-  TARGET="$HOME/.workbuddy/skills"
+  TARGET="$HOME/.skills"
   mkdir -p "$TARGET"
+  echo "ℹ️  未探测到已知智能体技能目录，已选择 $TARGET 作为安装位置。"
+  echo "    / No known agent skills directory detected; using $TARGET."
+  echo "    如你的智能体有专属技能目录，可随后将 airbeep 文件夹移动过去。"
+  echo "    / If your agent has its own skills directory, move the airbeep folder there."
 fi
 
 # 3) 复制技能到 skills 目录 / copy the skill into the skills directory

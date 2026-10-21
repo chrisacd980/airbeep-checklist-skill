@@ -1,8 +1,8 @@
-# AirBeep 操作检查卡 · WorkBuddy 技能
+# AirBeep 通话免提示音 · 操作检查卡
 
 > 🌍 Languages: [English](README.en.md) | 简体中文
 
-一个用于 **iOS 通话录音提示音消除（AirBeep）** 的 WorkBuddy 技能，附带一张可直接在浏览器打开的「交互式操作检查卡」（**支持中英双语切换**）。
+一套用于 **iOS 通话录音提示音消除（AirBeep）** 的开源技能，附带一张可直接在浏览器打开的「交互式操作检查卡」（**支持中英双语切换**），可安装到任意本地智能体。
 
 ## 这是什么
 
@@ -12,25 +12,25 @@ AirBeep 通过 macOS / Windows 端的 AirTraffic 沙盒逃逸路线，把 iOS �
 
 ## 安装 —— 一行命令装到任意本地智能体
 
-只要你的本地智能体（WorkBuddy / CodeBuddy / Claude Code / Cursor / 通义灵码 / Aider 等）具备终端，在它的对话里直接发送这一行即可自动克隆并安装（会自动探测各智能体的技能目录）：
+只要你的本地智能体具备终端，在它的对话里直接发送这一行即可自动克隆并安装（`install.sh` 会自动探测该智能体的技能目录，无需手动指定路径）：
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/chrisacd980/airbeep-checklist-skill/main/install.sh | bash
 ```
 
-安装后重启 / 刷新智能体即可。也可以手动克隆到对应技能目录（以 WorkBuddy 为例）：
+安装后重启 / 刷新智能体即可。也可以手动克隆到对应智能体的技能目录下（目录名用 `airbeep`）：
 
 ```bash
 git clone https://github.com/chrisacd980/airbeep-checklist-skill.git \
-  ~/.workbuddy/skills/airbeep
+  <你的智能体技能目录>/airbeep
 ```
 
 ## 使用
 
 直接用浏览器打开技能目录里的检查卡（右上角可切换 中文 / EN）：
 
-```
-open ~/.workbuddy/skills/airbeep/airbeep-checklist.html
+```bash
+open <技能目录>/airbeep-checklist.html
 ```
 
 检查卡（页面最顶端）还包含：
@@ -57,8 +57,8 @@ open ~/.workbuddy/skills/airbeep/airbeep-checklist.html
 本仓库采用 **GPL-3.0** 开源协议，欢迎 fork 与再分发。各智能体适配情况：
 
 - **检查卡（airbeep-checklist.html）**：纯前端、零本地依赖、自包含。任何能打开网页的智能体（豆包 / Kimi / ChatGPT / Claude 等）或浏览器都能**直接展示**，不依赖任何特定平台。
-- **知识文本（SKILL.md / README）**：去掉 WorkBuddy 的 frontmatter 外壳后，可整段粘进任意智能体的「知识库 / 系统提示 / 自定义指令」当作操作指南。
-- **真正改写手机（airbeep.sh + 静音件）**：需要**在本机**（Mac / Win）运行的本地智能体（WorkBuddy、Claude Code 等）才能执行——因为它要访问你连在电脑上的 iPhone。纯云端对话智能体（网页版 Kimi、豆包）可以"知道怎么做"，但**没有手**去改手机。
+- **知识文本（SKILL.md / README）**：路径均为相对技能目录的自适应写法，可整段粘进任意智能体的「知识库 / 系统提示 / 自定义指令」当作操作指南。
+- **真正改写手机（airbeep.sh + 静音件）**：需要**在本机**（Mac / Win）运行的本地智能体才能执行——因为它要访问你连在电脑上的 iPhone。纯云端对话智能体（网页版 Kimi、豆包）可以"知道怎么做"，但**没有手**去改手机。
 - 仓库已自带 `silence-assets/`（静音件 + 真·原生还原件），clone 一次即可完成「应用 + 恢复」全部操作，无需自行生成。
 
 > 本地执行：在装好上游仓库与 venv 后，`bash airbeep.sh [status|apply|restore|verify]`。脚本**不写死任何路径**，自动搜索上游仓与 Python 环境。

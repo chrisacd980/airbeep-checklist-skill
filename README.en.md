@@ -1,8 +1,8 @@
-# AirBeep Operation Checklist · WorkBuddy Skill
+# AirBeep Call Tone-Free · Operation Checklist
 
 > 🌍 Languages: English | [简体中文](README.md)
 
-A WorkBuddy skill for **silencing iOS call-recording disclosure tones (AirBeep)**, bundled with an interactive browser checklist (**Chinese / English toggle**).
+An open-source skill for **silencing iOS call-recording disclosure tones (AirBeep)**, bundled with an interactive browser checklist (**Chinese / English toggle**), installable into any local agent.
 
 ## What is this
 
@@ -12,17 +12,17 @@ AirBeep uses the AirTraffic sandbox-escape route (macOS / Windows) to replace th
 
 ## Install — one line for ANY local agent
 
-If your local agent (WorkBuddy / CodeBuddy / Claude Code / Cursor / Tongyi Qianwen / Aider, etc.) has a terminal, just send this line in its chat — it auto-clones and installs (auto-detecting the agent's skills directory):
+If your local agent has a terminal, just send this line in its chat — it auto-clones and installs (`install.sh` auto-detects the agent's skills directory, no manual path needed):
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/chrisacd980/airbeep-checklist-skill/main/install.sh | bash
 ```
 
-Restart / refresh the agent afterward. You can also clone manually into the agent's skills directory (WorkBuddy shown):
+Restart / refresh the agent afterward. You can also clone manually into the agent's skills directory (folder name `airbeep`):
 
 ```bash
 git clone https://github.com/chrisacd980/airbeep-checklist-skill.git \
-  ~/.workbuddy/skills/airbeep
+  <your-agents-skills-dir>/airbeep
 ```
 
 ## Usage
@@ -30,7 +30,7 @@ git clone https://github.com/chrisacd980/airbeep-checklist-skill.git \
 Open the checklist in a browser (use the 中文 / EN toggle at the top right):
 
 ```
-open ~/.workbuddy/skills/airbeep/airbeep-checklist.html
+open <skill-dir>/airbeep-checklist.html
 ```
 
 The checklist (at the very top of the page) also includes:
@@ -57,8 +57,8 @@ The checklist body includes:
 This repo is **GPL-3.0** open source — forks and redistribution are welcome. Agent compatibility:
 
 - **Checklist (airbeep-checklist.html)**: pure frontend, zero local dependencies, self-contained. Any agent that can open a web page (Doubao / Kimi / ChatGPT / Claude, etc.) or any browser can **display it directly**, with no platform lock-in.
-- **Knowledge text (SKILL.md / README)**: after stripping WorkBuddy's frontmatter, it can be pasted wholesale into any agent's "knowledge base / system prompt / custom instructions" as an operating guide.
-- **Actually modifying the phone (airbeep.sh + silent assets)**: requires a **local** agent running on your own machine (Mac / Win) — e.g. WorkBuddy, Claude Code — because it must reach the iPhone connected to your computer. Pure cloud chat agents (web Kimi, Doubao) can "know how" but have **no hands** to touch the phone.
+- **Knowledge text (SKILL.md / README)**: all paths are relative to the skill directory (self-adapting), so it can be pasted wholesale into any agent's "knowledge base / system prompt / custom instructions" as an operating guide.
+- **Actually modifying the phone (airbeep.sh + silent assets)**: requires a **local** agent running on your own machine (Mac / Win), because it must reach the iPhone connected to your computer. Pure cloud chat agents (web Kimi, Doubao) can "know how" but have **no hands** to touch the phone.
 - The repo bundles `silence-assets/` (silent assets + true native restore files), so a single clone completes both "apply" and "restore" — no need to generate assets yourself.
 
 > Local execution: after cloning the upstream repo and creating the venv, run `bash airbeep.sh [status|apply|restore|verify]`. The script **hardcodes no paths** and auto-detects the upstream repo and Python environment.

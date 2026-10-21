@@ -37,7 +37,7 @@ AirBeep 通过 **macOS 端 AirTraffic 沙盒逃逸路线**，把 iOS 系统里"�
 ## 本技能附带资产（随 `git clone` 一起拿到，无需额外下载）
 - `silence-assets/my-silent-StartDisclosureWithTone.m4a`（1381 B）— Chris 实测设备的等时长静音件（开始提示音）
 - `silence-assets/my-silent-StopDisclosure.caf`（182113 B）— 同上（停止提示音）
-- `airbeep-checklist.html` — 交互式操作检查卡（中/英切换、顶端致谢文本框、一键安装框、关闭自动升级警示牌、Mac/Win 部署脚本下载、7 步状态机）
+- `airbeep-checklist.html` — 交互式操作检查卡（中/英切换、顶端致谢文本框、关闭自动升级警示牌、Mac/Win 部署脚本下载、7 步状态机）
 - 这两个静音件已针对 iPhone17,1 / iOS 27.2 beta 2 生成；**同机型同版本可直接 replace**，其他机型请先按事实 #2 重新生成。
 
 ## macOS 路线核心命令（在装好 pymobiledevice3 的 venv 中运行）
@@ -48,13 +48,14 @@ python 设备体检.py
 airlift.py read /var/mobile/Library/CallServices/Greetings/default/StartDisclosureWithTone.m4a start_dump.m4a --logging
 airlift.py read /var/mobile/Library/CallServices/Greetings/default/StopDisclosure.caf stop_dump.caf --logging
 # 3) 本技能已附带静音件（silence-assets/），同机型可直接用；若机型/iOS 不同请先 read dump + 静音件生成.sh 重新生成
-# 4) replace 替换（自动备份原件到 --backup）。静音件路径指向你的技能目录：
-airlift.py replace /var/mobile/Library/CallServices/Greetings/default/StartDisclosureWithTone.m4a ~/.workbuddy/skills/airbeep/silence-assets/my-silent-StartDisclosureWithTone.m4a --backup start_prev.m4a --logging
-airlift.py replace /var/mobile/Library/CallServices/Greetings/default/StopDisclosure.caf ~/.workbuddy/skills/airbeep/silence-assets/my-silent-StopDisclosure.caf --backup stop_prev.caf --logging
+# 4) replace 替换（自动备份原件到 --backup）。以下命令默认在【技能目录】内执行
+#    （技能目录 = 本 SKILL.md 所在目录；install.sh 安装时自动定位，无需关心具体路径）
+airlift.py replace /var/mobile/Library/CallServices/Greetings/default/StartDisclosureWithTone.m4a ./silence-assets/my-silent-StartDisclosureWithTone.m4a --backup start_prev.m4a --logging
+airlift.py replace /var/mobile/Library/CallServices/Greetings/default/StopDisclosure.caf ./silence-assets/my-silent-StopDisclosure.caf --backup stop_prev.caf --logging
 # 5) 验证：再次 read 比对哈希（应等于 my-silent-*）
 # 回滚 / 恢复原生（第6列）：用本技能已附带的真·原生件（逐字节原件，已哈希校验）
-airlift.py replace /var/mobile/Library/CallServices/Greetings/default/StartDisclosureWithTone.m4a ~/.workbuddy/skills/airbeep/silence-assets/native-restore-StartDisclosureWithTone.m4a --backup restore_prev_Start.m4a --logging
-airlift.py replace /var/mobile/Library/CallServices/Greetings/default/StopDisclosure.caf ~/.workbuddy/skills/airbeep/silence-assets/native-restore-StopDisclosure.caf --backup restore_prev_Stop.caf --logging
+airlift.py replace /var/mobile/Library/CallServices/Greetings/default/StartDisclosureWithTone.m4a ./silence-assets/native-restore-StartDisclosureWithTone.m4a --backup restore_prev_Start.m4a --logging
+airlift.py replace /var/mobile/Library/CallServices/Greetings/default/StopDisclosure.caf ./silence-assets/native-restore-StopDisclosure.caf --backup restore_prev_Stop.caf --logging
 # 注：native-restore-* 为首轮从原生态真机 read 出的逐字节原件，是权威恢复源；切勿用 start_prev/stop_prev（那是静音件备份，恢复会越恢复越静音）
 ```
 
@@ -70,7 +71,7 @@ airlift.py replace /var/mobile/Library/CallServices/Greetings/default/StopDisclo
 - 打开方式：浏览器直接打开 `airbeep-checklist.html` 即可（无需服务器）。
 
 ## 让任意本地智能体都能用（一行命令 / One line for ANY local agent）
-本技能与具体智能体无关：只要对方的**本地智能体具备终端/代码执行能力**（WorkBuddy、CodeBuddy、Claude Code、Cursor、通义灵码、Aider 等），在其对话里发送下面这行命令即可自动克隆并安装到对应技能目录（`install.sh` 自动探测 `.workbuddy` / `.codebuddy` / `.claude` / `.cursor` 等目录，未命中回退 WorkBuddy 路径）：
+本技能与具体智能体无关：只要本地智能体**具备终端/代码执行能力**，在其对话里发送下面这行命令即可自动克隆并安装到该智能体的技能目录（`install.sh` 自动探测，无需手动指定路径）：
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/chrisacd980/airbeep-checklist-skill/main/install.sh | bash
