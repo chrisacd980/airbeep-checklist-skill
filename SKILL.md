@@ -22,16 +22,23 @@ AirBeep 通过 **macOS 端 AirTraffic 沙盒逃逸路线**，把 iOS 系统里"�
 ## 必须遵守的关键事实
 1. **漏洞会在 iOS 27.2 正式版修补**（预计 2026-10-26 那周）。升级到 27.2 正式版后方法失效，需作者更新绕过。→ 动手前必须确认设备仍是 27.2 B2 且**已关闭自动更新**。
 2. **静音件不能照搬上游配套件**。必须先 `read` dump 真机原件，再按实际时长/格式生成静音件（否则时长不匹配——实测 StopDisclosure.caf 为 Opus 48k 1.52s，上游配套件 1.94s，差 420ms）。`静音件生成.sh` 是关键工具。
+   - **本技能已附带 Chris 实测设备的静音件**：`silence-assets/my-silent-StartDisclosureWithTone.m4a` 与 `silence-assets/my-silent-StopDisclosure.caf`（iPhone17,1 / iOS 27.2 beta 2，等时长静音件）。**同机型同版本可直接用于 replace**；若你机型或 iOS 版本不同，请先 `read` dump 原件、用上游仓的 `静音件生成.sh` 按实际时长重新生成再 replace。
 3. 设备实测（Chris）：iPhone17,1 · iOS 27.2 beta 2 (24B5089g)，macOS 路线端到端跑通，**重启后静音持久**。
 4. 用 `silent-ios-format/` 的 iOS 格式静音件，不要用 `macos-port/silent/` 的 Windows 版。
 
 ## 本地项目结构（操作前需有项目副本）
 - `AIRBEEP-RUN.md` — 完整步骤 0–5、回滚、失败救援、常见坑（**首选阅读**）
-- `airbeep-calltone-research/macos-port/airlift.py` — macOS 路线脚本（已含 `from pathlib import Path` 与 `AIRLIFT_PAIRING_CACHE` 修复）
+- `airbeep-calltone-research/artifacts/airliftsilence/macos-port/airlift.py` — macOS 路线脚本（已含 `from pathlib import Path` 与 `AIRLIFT_PAIRING_CACHE` 修复）
 - `airbeep-calltone-research/artifacts/airliftsilence/`
   - `device-backup-*.caf / .m4a` — replace 前真机原件备份，**回滚唯一保障，必须保留**
   - `my-silent-*.caf / .m4a` — 按设备原件生成的静音件
   - `静音件生成.sh`、`设备体检.py`、`演练-救援流程.py` — 工具脚本
+
+## 本技能附带资产（随 `git clone` 一起拿到，无需额外下载）
+- `silence-assets/my-silent-StartDisclosureWithTone.m4a`（1381 B）— Chris 实测设备的等时长静音件（开始提示音）
+- `silence-assets/my-silent-StopDisclosure.caf`（182113 B）— 同上（停止提示音）
+- `airbeep-checklist.html` — 交互式操作检查卡（中/英切换、关闭自动升级警示牌、Mac/Win 部署脚本下载、6 步状态机）
+- 这两个静音件已针对 iPhone17,1 / iOS 27.2 beta 2 生成；**同机型同版本可直接 replace**，其他机型请先按事实 #2 重新生成。
 
 ## macOS 路线核心命令（在装好 pymobiledevice3 的 venv 中运行）
 ```bash
@@ -40,10 +47,10 @@ python 设备体检.py
 # 2) read dump 原件（两条路径都读）
 airlift.py read /var/mobile/Library/CallServices/Greetings/default/StartDisclosureWithTone.m4a start_dump.m4a --logging
 airlift.py read /var/mobile/Library/CallServices/Greetings/default/StopDisclosure.caf stop_dump.caf --logging
-# 3) 按 dump 实际时长/格式生成静音件（静音件生成.sh）
-# 4) replace 替换（自动备份原件到 --backup）
-airlift.py replace /var/mobile/Library/CallServices/Greetings/default/StartDisclosureWithTone.m4a my-silent-StartDisclosureWithTone.m4a --backup start_prev.m4a --logging
-airlift.py replace /var/mobile/Library/CallServices/Greetings/default/StopDisclosure.caf my-silent-StopDisclosure.caf --backup stop_prev.caf --logging
+# 3) 本技能已附带静音件（silence-assets/），同机型可直接用；若机型/iOS 不同请先 read dump + 静音件生成.sh 重新生成
+# 4) replace 替换（自动备份原件到 --backup）。静音件路径指向你的技能目录：
+airlift.py replace /var/mobile/Library/CallServices/Greetings/default/StartDisclosureWithTone.m4a ~/.workbuddy/skills/airbeep/silence-assets/my-silent-StartDisclosureWithTone.m4a --backup start_prev.m4a --logging
+airlift.py replace /var/mobile/Library/CallServices/Greetings/default/StopDisclosure.caf ~/.workbuddy/skills/airbeep/silence-assets/my-silent-StopDisclosure.caf --backup stop_prev.caf --logging
 # 5) 验证：再次 read 比对哈希
 # 回滚（如需恢复）：
 airlift.py write /var/mobile/Library/CallServices/Greetings/default/StartDisclosureWithTone.m4a device-backup-StartDisclosureWithTone.m4a --logging
