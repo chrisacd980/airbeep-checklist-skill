@@ -1,8 +1,8 @@
 ;!@Install@!UTF-8!
-Title="AirBeep 操作检查卡"
-BeginPrompt="AirBeep 操作检查卡\n\n即将安装到 %USERPROFILE%\AirBeep，并自动创建打开卡片的快捷方式（桌面 + 开始菜单）。\n\n点击「安装」开始。"
-InstallPath="%USERPROFILE%\AirBeep"
+Title="AirBeep Test Card"
+BeginPrompt="AirBeep Test Card\n\nThis will install to %USERPROFILE%\AirBeepTest and create Desktop / Start Menu shortcuts that open the checklist.\n\nClick Install to begin."
+InstallPath="%USERPROFILE%\AirBeepTest"
 GUIMode="2"
 RunProgram="setup.bat"
-FinishMessage="安装完成！已创建「AirBeep 检查卡」快捷方式，检查卡即将在浏览器打开。"
+FinishMessage="Installed. Desktop and Start Menu shortcuts have been created; the checklist now opens in your browser."
 ;!@Install@!
