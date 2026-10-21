@@ -145,6 +145,20 @@
     transition: opacity .25s, transform .25s; z-index: 50;
   }
   .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  /* 执行前隐私/法律确认弹窗 */
+  .modal-overlay { display:none; position:fixed; inset:0; background:rgba(20,20,20,.55); z-index:999; align-items:center; justify-content:center; }
+  .modal-overlay.show { display:flex; }
+  .modal-box { background:#fff; max-width:440px; width:90%; border-radius:14px; border:2px solid #e8590c; box-shadow:0 14px 44px rgba(0,0,0,.4); padding:24px 26px; text-align:center; animation:pop .18s ease-out; }
+  @keyframes pop { from{transform:scale(.92);opacity:0;} to{transform:scale(1);opacity:1;} }
+  .modal-icon { font-size:36px; line-height:1; }
+  .modal-box h3 { color:#e8590c; margin:10px 0 12px; font-size:18px; font-weight:700; }
+  .modal-box p { color:#343a40; font-size:14px; line-height:1.65; margin:0 0 20px; }
+  .modal-btns { display:flex; gap:12px; justify-content:center; }
+  .btn-cancel, .btn-ok { padding:10px 20px; border-radius:9px; border:none; font-size:14px; cursor:pointer; transition:filter .15s; }
+  .btn-cancel { background:#e9ecef; color:#495057; }
+  .btn-cancel:hover { filter:brightness(.96); }
+  .btn-ok { background:#e8590c; color:#fff; font-weight:700; }
+  .btn-ok:hover { filter:brightness(1.05); }
 </style>
 </head>
 <body>
@@ -294,7 +308,12 @@ winget install AppleiTunes</span></div>
         '<span class="step">恢复原生方案：</span>在 AirBeep 里点「恢复」，即可从自动备份一键还原系统原始提示音，随时可逆。'
       ],
       progress: (n) => `进度：${n} / 5（第 6 列独立）`,
-      reset: "重置"
+      reset: "重置",
+      confirmTitle: "⚠️ 隐私与法律提示",
+      confirmBody: "该命令仅适用于测试，如果您有真实通话录音需求，请在征得通话对方同意后再执行，以便保护双方隐私，避免法律纠纷。",
+      confirmOk: "我已知晓，确认执行",
+      confirmCancel: "取消",
+      confirmDone: "✅ 已确认授权执行 AirBeep。请返回 WorkBuddy 对话，告诉助手「执行」，由其在终端运行 airlift.py 完成真机静音替换（含自动备份原件）。"
     },
     en: {
       title: "AirBeep Silence Tool · Operation Checklist",
@@ -336,7 +355,12 @@ winget install AppleiTunes</span></div>
         '<span class="step">Restore original:</span> Tap \u201cRestore\u201d in AirBeep to bring back the original system tones from the automatic backup — fully reversible.'
       ],
       progress: (n) => `Progress: ${n} / 5 (column 6 is independent)`,
-      reset: "Reset"
+      reset: "Reset",
+      confirmTitle: "⚠️ Privacy & Legal Notice",
+      confirmBody: "This command is for testing purposes only. If you need to record a real call, please obtain the other party's consent before proceeding, so as to protect both parties' privacy and avoid legal disputes.",
+      confirmOk: "I Understand, Proceed",
+      confirmCancel: "Cancel",
+      confirmDone: "✅ Authorization confirmed. Please return to the WorkBuddy chat and tell the assistant to 'execute' — they will run airlift.py on the terminal to perform the real device tone replacement (with automatic original backup)."
     }
   };
 
@@ -484,10 +508,36 @@ winget install AppleiTunes</span></div>
       return;
     }
 
-    // 第 2、3 列：直接变绿
+    if (i === 2) {
+      // 第 3 列：执行 AirBeep —— 先弹隐私/法律确认框，确认后才变绿
+      showExecConfirm(() => {
+        state[i] = "d"; paint(i);
+        const infoEl = document.getElementById("info");
+        if (infoEl) infoEl.innerHTML = L.confirmDone;
+        highlightTip(i);
+        updateProgress();
+      });
+      return;
+    }
+
+    // 第 2 列（及兜底）：直接变绿
     state[i] = "d"; paint(i);
     showInfo(String(i)); highlightTip(i);
     updateProgress();
+  }
+
+  // 第 3 列执行前的隐私/法律确认弹窗
+  function showExecConfirm(onOk) {
+    const m = document.getElementById("execConfirm");
+    document.getElementById("ec-title").textContent = L.confirmTitle;
+    document.getElementById("ec-body").textContent = L.confirmBody;
+    document.getElementById("ec-ok").textContent = L.confirmOk;
+    document.getElementById("ec-cancel").textContent = L.confirmCancel;
+    m.classList.add("show");
+    const ok = document.getElementById("ec-ok");
+    const cancel = document.getElementById("ec-cancel");
+    ok.onclick = () => { m.classList.remove("show"); onOk(); };
+    cancel.onclick = () => { m.classList.remove("show"); };
   }
 
   // 二选一按钮（未成功 / 成功）
@@ -561,6 +611,12 @@ winget install AppleiTunes</span></div>
     document.getElementById("t-tips-title").textContent = L.tipsTitle;
     buildTips();
     document.getElementById("reset").textContent = L.reset;
+    if (document.getElementById("execConfirm") && document.getElementById("execConfirm").classList.contains("show")) {
+      document.getElementById("ec-title").textContent = L.confirmTitle;
+      document.getElementById("ec-body").textContent = L.confirmBody;
+      document.getElementById("ec-ok").textContent = L.confirmOk;
+      document.getElementById("ec-cancel").textContent = L.confirmCancel;
+    }
     paintAll();
     updateProgress();
     renderInfo();
@@ -589,5 +645,17 @@ winget install AppleiTunes</span></div>
 
   applyLang("zh");
 </script>
+  <!-- 执行前隐私/法律确认弹窗 -->
+  <div id="execConfirm" class="modal-overlay">
+    <div class="modal-box">
+      <div class="modal-icon">⚠️</div>
+      <h3 id="ec-title"></h3>
+      <p id="ec-body"></p>
+      <div class="modal-btns">
+        <button id="ec-cancel" class="btn-cancel"></button>
+        <button id="ec-ok" class="btn-ok"></button>
+      </div>
+    </div>
+  </div>
 </body>
 </html>
