@@ -33,7 +33,7 @@ open ~/.workbuddy/skills/airbeep/airbeep-checklist.html
 2. **两个部署选项卡**（带 Logo）：
    - 🍎 **Mac（M 芯片）** → 下载 `deploy-airbeep-mac.sh`
    - 🪟 **Win 系统** → 下载 `deploy-airbeep-win.ps1`
-3. **6 步操作检查卡**：手动检查 → 开发者模式 → 执行 AirBeep → 自行通话测试 → 重启后测试 → 恢复原生方案。前 5 步按序点击；第 6 列独立，「恢复原生方案」点后除版本号与「已恢复」外全部变红。
+3. **7 步操作检查卡**：手动检查 → 开发者模式 → 执行 AirBeep → 自行通话测试 → 重启后测试 → 关闭开发者模式 → 恢复原生方案。前 6 步按序点击；第 7 列「恢复原生方案」独立，点后除版本号与「已恢复」外全部变红。
 
 ## 关键事实
 
@@ -41,6 +41,17 @@ open ~/.workbuddy/skills/airbeep/airbeep-checklist.html
 - 漏洞会在 **iOS 27.2 正式版** 修补；正式版发布前务必关闭自动更新。
 - 静音件不能照搬上游配套件，需按真机原件实际时长 / 格式生成。
 - Windows 是上游**原生、作者端到端验证过**的路线（`source-patched/`）；macOS 路线为后续补充。
+
+## 开源与跨智能体 / 通用性
+
+本仓库采用 **GPL-3.0** 开源协议，欢迎 fork 与再分发。各智能体适配情况：
+
+- **检查卡（airbeep-checklist.html）**：纯前端、零本地依赖、自包含。任何能打开网页的智能体（豆包 / Kimi / ChatGPT / Claude 等）或浏览器都能**直接展示**，不依赖任何特定平台。
+- **知识文本（SKILL.md / README）**：去掉 WorkBuddy 的 frontmatter 外壳后，可整段粘进任意智能体的「知识库 / 系统提示 / 自定义指令」当作操作指南。
+- **真正改写手机（airbeep.sh + 静音件）**：需要**在本机**（Mac / Win）运行的本地智能体（WorkBuddy、Claude Code 等）才能执行——因为它要访问你连在电脑上的 iPhone。纯云端对话智能体（网页版 Kimi、豆包）可以"知道怎么做"，但**没有手**去改手机。
+- 仓库已自带 `silence-assets/`（静音件 + 真·原生还原件），clone 一次即可完成「应用 + 恢复」全部操作，无需自行生成。
+
+> 本地执行：在装好上游仓库与 venv 后，`bash airbeep.sh [status|apply|restore|verify]`。脚本**不写死任何路径**，自动搜索上游仓与 Python 环境。
 
 ## 上游参考
 

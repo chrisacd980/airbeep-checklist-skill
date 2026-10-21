@@ -10,10 +10,48 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ASSETS="$SCRIPT_DIR/silence-assets"
-PROJ="/Users/chris/WorkBuddy/2026-10-21-13-40-57"
-AIRLIFT="$PROJ/airbeep-calltone-research/artifacts/airliftsilence/macos-port/airlift.py"
-VENV="$PROJ/.venv/bin/python"
-BAK="$PROJ/airbeep-calltone-research/artifacts/airliftsilence"
+
+# --- 可移植路径解析（不写死任何机器绝对路径）---
+# 上游研究仓与 Python venv 的位置优先用环境变量覆盖：
+#   AIRBEEP_PROJ  指向克隆的 airbeep-calltone-research 仓库目录
+#   AIRBEEP_VENV  指向已安装 pymobiledevice3 的 python 解释器
+# 未设置时，从脚本目录 / 当前目录 / 家目录向上自动搜索常见位置。
+find_repo() {
+  local d="$1"
+  while [ -n "$d" ] && [ "$d" != "/" ]; do
+    if [ -d "$d/airbeep-calltone-research/artifacts/airliftsilence/macos-port" ]; then
+      echo "$d/airbeep-calltone-research"; return 0
+    fi
+    d="$(dirname "$d")"
+  done
+  return 1
+}
+PROJ="${AIRBEEP_PROJ:-}"
+if [ -z "$PROJ" ]; then
+  for base in "$SCRIPT_DIR" "$PWD" "$HOME"; do
+    if PROJ="$(find_repo "$base")"; then break; fi
+  done
+fi
+if [ -z "$PROJ" ]; then
+  echo "✗ 未找到 airbeep-calltone-research 仓库。" >&2
+  echo "  请先运行卡片里的部署脚本克隆上游，或设置： export AIRBEEP_PROJ=/你的/项目路径" >&2
+  exit 1
+fi
+
+AIRLIFT="$PROJ/artifacts/airliftsilence/macos-port/airlift.py"
+BAK="$PROJ/artifacts/airliftsilence"
+
+VENV="${AIRBEEP_VENV:-}"
+if [ -z "$VENV" ]; then
+  for cand in "$PROJ/.venv/bin/python" "$(dirname "$PROJ")/.venv/bin/python" "$SCRIPT_DIR/.venv/bin/python" "$(command -v python3)"; do
+    if [ -n "$cand" ] && "$cand" -c "import pymobiledevice3" >/dev/null 2>&1; then VENV="$cand"; break; fi
+  done
+fi
+if [ -z "$VENV" ]; then
+  echo "✗ 未找到已安装 pymobiledevice3 的 Python。" >&2
+  echo "  请运行卡片部署脚本创建 venv，或设置： export AIRBEEP_VENV=/path/to/venv/bin/python" >&2
+  exit 1
+fi
 UDID="${AIRBEEP_UDID:-}"
 
 START_PATH="/var/mobile/Library/CallServices/Greetings/default/StartDisclosureWithTone.m4a"
