@@ -12,21 +12,18 @@ AirBeep uses the AirTraffic sandbox-escape route (macOS / Windows) to replace th
 
 ## Install — one line for ANY local agent
 
-If your local agent (WorkBuddy / CodeBuddy / Claude Code / Cursor / Tongyi Qianwen / Aider, etc.) has a terminal, just send this line in its chat — it auto-clones and installs:
+If your local agent (WorkBuddy / CodeBuddy / Claude Code / Cursor / Tongyi Qianwen / Aider, etc.) has a terminal, just send this line in its chat — it auto-clones and installs (auto-detecting the agent's skills directory):
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/chrisacd980/airbeep-checklist-skill/main/install.sh | bash
 ```
 
-`install.sh` auto-detects common agents' skills directories (`.workbuddy` / `.codebuddy` / `.claude` / `.cursor` / `.qwen` / `.aider`) and falls back to the WorkBuddy path. Restart / refresh the agent afterward.
+Restart / refresh the agent afterward. You can also clone manually into the agent's skills directory (WorkBuddy shown):
 
-> Or clone manually (equivalent to the script's fallback path):
-> ```bash
-> git clone https://github.com/chrisacd980/airbeep-checklist-skill.git \
->   ~/.workbuddy/skills/airbeep
-> ```
-
-Restart / refresh your WorkBuddy session and `airbeep` appears under “My Skills”.
+```bash
+git clone https://github.com/chrisacd980/airbeep-checklist-skill.git \
+  ~/.workbuddy/skills/airbeep
+```
 
 ## Usage
 

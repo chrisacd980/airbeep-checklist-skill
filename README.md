@@ -12,21 +12,18 @@ AirBeep 通过 macOS / Windows 端的 AirTraffic 沙盒逃逸路线，把 iOS �
 
 ## 安装 —— 一行命令装到任意本地智能体
 
-只要你的本地智能体（WorkBuddy / CodeBuddy / Claude Code / Cursor / 通义灵码 / Aider 等）具备终端，在它的对话里直接发送这一行即可自动克隆并安装：
+只要你的本地智能体（WorkBuddy / CodeBuddy / Claude Code / Cursor / 通义灵码 / Aider 等）具备终端，在它的对话里直接发送这一行即可自动克隆并安装（会自动探测各智能体的技能目录）：
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/chrisacd980/airbeep-checklist-skill/main/install.sh | bash
 ```
 
-`install.sh` 会自动探测常见智能体的 skills 目录（`.workbuddy` / `.codebuddy` / `.claude` / `.cursor` / `.qwen` / `.aider`），未命中则回退到 WorkBuddy 路径。安装后重启 / 刷新智能体即可。
+安装后重启 / 刷新智能体即可。也可以手动克隆到对应技能目录（以 WorkBuddy 为例）：
 
-> 也可以手动克隆（等价于上面脚本的兜底路径）：
-> ```bash
-> git clone https://github.com/chrisacd980/airbeep-checklist-skill.git \
->   ~/.workbuddy/skills/airbeep
-> ```
-
-克隆后重启 / 刷新 WorkBuddy 会话即可在「我的技能」中看到 `airbeep`。
+```bash
+git clone https://github.com/chrisacd980/airbeep-checklist-skill.git \
+  ~/.workbuddy/skills/airbeep
+```
 
 ## 使用
 

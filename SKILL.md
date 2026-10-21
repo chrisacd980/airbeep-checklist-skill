@@ -70,16 +70,14 @@ airlift.py replace /var/mobile/Library/CallServices/Greetings/default/StopDisclo
 - 打开方式：浏览器直接打开 `airbeep-checklist.html` 即可（无需服务器）。
 
 ## 让任意本地智能体都能用（一行命令 / One line for ANY local agent）
-本技能与具体智能体无关：只要对方的**本地智能体具备终端/代码执行能力**（WorkBuddy、CodeBuddy、Claude Code、Cursor、通义灵码、Aider 等），在其对话里发送下面这行命令即可自动克隆并安装到对应 skills 目录：
+本技能与具体智能体无关：只要对方的**本地智能体具备终端/代码执行能力**（WorkBuddy、CodeBuddy、Claude Code、Cursor、通义灵码、Aider 等），在其对话里发送下面这行命令即可自动克隆并安装到对应技能目录（`install.sh` 自动探测 `.workbuddy` / `.codebuddy` / `.claude` / `.cursor` 等目录，未命中回退 WorkBuddy 路径）：
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/chrisacd980/airbeep-checklist-skill/main/install.sh | bash
 ```
 
-- `install.sh` 会自动探测常见智能体的 skills 目录（`.workbuddy` / `.codebuddy` / `.claude` / `.cursor` / `.qwen` / `.aider`），未命中则回退到 WorkBuddy 路径。
-- 安装后重启（或刷新）智能体，说「用 airbeep 技能消除 iPhone 通话录音提示音」即可调用。
+- 安装后重启（或刷新）智能体，说「用 airbeep 技能消除 iPhone 通话录音提示音」即可调用；也可手动 `git clone` 本仓库到对应技能目录。
 - 纯云端聊天机器人（如豆包网页版 / Kimi 网页版）无法执行 Shell，但仍可手动 `git clone` 本仓库、按 README 使用卡片与脚本——知识层对所有智能体通用，真机改写仅限本机智能体。
-- 同一行命令也写进了 `airbeep-checklist.html` 顶部的安装框，用户可从卡片一键复制。
 
 ## 版本监测
 不再依赖每日自动化。用户点检查卡里的「手动检查」按钮时，技能会实时抓取仓库 README 的 Requirements 支持区间并展示版本号；或需要时重新用 WebFetch 抓取仓库核对。用户问"AirBeep 现在支持哪个 iOS 版本"时，优先用「手动检查」结果或重新抓取仓库。
