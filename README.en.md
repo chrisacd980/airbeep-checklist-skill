@@ -13,7 +13,7 @@ AirBeep uses the AirTraffic sandbox-escape route (macOS / Windows) to replace th
 ## Install (as a WorkBuddy user-level skill)
 
 ```bash
-git clone https://github.com/ChrisCD/airbeep-checklist-skill.git \
+git clone https://github.com/chrisacd980/airbeep-checklist-skill.git \
   ~/.workbuddy/skills/airbeep
 ```
 

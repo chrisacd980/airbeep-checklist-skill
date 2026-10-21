@@ -13,7 +13,7 @@ AirBeep 通过 macOS / Windows 端的 AirTraffic 沙盒逃逸路线，把 iOS �
 ## 安装（作为 WorkBuddy 用户级技能）
 
 ```bash
-git clone https://github.com/ChrisCD/airbeep-checklist-skill.git \
+git clone https://github.com/chrisacd980/airbeep-checklist-skill.git \
   ~/.workbuddy/skills/airbeep
 ```
 
