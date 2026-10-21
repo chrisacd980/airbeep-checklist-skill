@@ -51,10 +51,11 @@ airlift.py read /var/mobile/Library/CallServices/Greetings/default/StopDisclosur
 # 4) replace 替换（自动备份原件到 --backup）。静音件路径指向你的技能目录：
 airlift.py replace /var/mobile/Library/CallServices/Greetings/default/StartDisclosureWithTone.m4a ~/.workbuddy/skills/airbeep/silence-assets/my-silent-StartDisclosureWithTone.m4a --backup start_prev.m4a --logging
 airlift.py replace /var/mobile/Library/CallServices/Greetings/default/StopDisclosure.caf ~/.workbuddy/skills/airbeep/silence-assets/my-silent-StopDisclosure.caf --backup stop_prev.caf --logging
-# 5) 验证：再次 read 比对哈希
-# 回滚（如需恢复）：
-airlift.py write /var/mobile/Library/CallServices/Greetings/default/StartDisclosureWithTone.m4a device-backup-StartDisclosureWithTone.m4a --logging
-airlift.py write /var/mobile/Library/CallServices/Greetings/default/StopDisclosure.caf device-backup-StopDisclosure.caf --logging
+# 5) 验证：再次 read 比对哈希（应等于 my-silent-*）
+# 回滚 / 恢复原生（第6列）：用本技能已附带的真·原生件（逐字节原件，已哈希校验）
+airlift.py replace /var/mobile/Library/CallServices/Greetings/default/StartDisclosureWithTone.m4a ~/.workbuddy/skills/airbeep/silence-assets/native-restore-StartDisclosureWithTone.m4a --backup restore_prev_Start.m4a --logging
+airlift.py replace /var/mobile/Library/CallServices/Greetings/default/StopDisclosure.caf ~/.workbuddy/skills/airbeep/silence-assets/native-restore-StopDisclosure.caf --backup restore_prev_Stop.caf --logging
+# 注：native-restore-* 为首轮从原生态真机 read 出的逐字节原件，是权威恢复源；切勿用 start_prev/stop_prev（那是静音件备份，恢复会越恢复越静音）
 ```
 
 ## 法律与伦理（务必告知用户）
@@ -64,7 +65,7 @@ airlift.py write /var/mobile/Library/CallServices/Greetings/default/StopDisclosu
 随技能附带的 `airbeep-checklist.html` 是可直接在浏览器打开的操作向导，包含：
 - 顶部红色警示牌：提醒**关闭 iPhone 自动升级**（升级到 iOS 27.2 正式版会导致方案失效）。
 - 两个带 Logo 部署选项卡：**Mac（M 芯片）** 与 **Win 系统**，各自提供对应系统的「下载部署脚本」按钮（`.sh` / `.ps1`）。
-- 下方 6 步操作检查卡：① 手动检查（自动抓取 GitHub README 显示支持版本区间，如 `27.0 – 27.2 Beta 2`）② 开发者模式（已开启并连接电脑）③ 执行 AirBeep（已执行）④ 自行通话测试（通话测试，二选一：成功／未成功）⑤ 重启后测试（重启测试，二选一）⑥ 恢复原生方案（已恢复，独立列）。前 5 步需按序点击；第 6 列随时可点，点后除版本号与「已恢复」外全部变红。
+- 下方 6 步操作检查卡：① 手动检查（点按后自动抓取 GitHub README 显示支持版本区间，如 `27.0 – 27.2 Beta 2`）② 开发者模式（点按后显示「已开启并连接电脑」）③ 执行 AirBeep（点按弹隐私确认框，确认后显示「已执行」——真机替换由助手在终端执行）④ 自行通话测试（通话测试，二选一：成功／未成功）⑤ 重启后测试（重启测试，二选一）⑥ 恢复原生方案（独立列，点按后显示「已恢复」——真机还原由助手执行）。前 5 步需按序点击；第 6 列随时可点，点后除版本号与「已恢复」外全部变红。
 - 打开方式：浏览器直接打开 `airbeep-checklist.html` 即可（无需服务器）。
 
 ## 版本监测
