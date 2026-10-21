@@ -14,6 +14,7 @@
 """
 import json
 import os
+import shutil
 import subprocess
 import sys
 import threading
@@ -73,7 +74,7 @@ def env_report():
     ok, out = probe(["python3", "--version"])
     rep["python"], rep["pythonVersion"] = ok, out
     if not ok:
-        rep["hints"].append("未找到 python3。macOS 安装 Xcode 命令行工具：xcode-select --install；Windows 到 python.org 安装并勾选 Add to PATH。")
+        rep["hints"].append("未找到 python3（无法自动安装）：macOS 运行 xcode-select --install；Windows 到 python.org 安装并勾选 Add to PATH。")
         return rep
     # venv 内或系统内的 pymobiledevice3
     py = os.path.join(VENV, "bin", "python3") if rep["venv"] else "python3"
@@ -83,13 +84,16 @@ def env_report():
     rep["pymobiledevice3"] = ok
     ok, _ = probe(["ffmpeg", "-version"])
     rep["ffmpeg"] = ok
-    if not ok:
-        rep["hints"].append("未找到 ffmpeg。macOS：brew install ffmpeg；Windows：winget install Gyan.FFmpeg。")
+    if not (rep["pymobiledevice3"] and rep["airlift"]):
+        rep["hints"].append("点「⚙️ 一键配置环境」，由软件自动安装修复（无需手动复制命令）。")
+    if not rep["ffmpeg"]:
+        rep["hints"].append("ffmpeg 缺失：点「⚙️ 一键配置环境」将自动通过 brew / winget 安装。")
     return rep
 
 
 def do_setup():
-    """一键配置：克隆上游仓 → 建 venv → 安装 pymobiledevice3。返回日志。"""
+    """一键配置：克隆上游仓 → 建 venv → 装 pymobiledevice3 → 自动装 ffmpeg。
+    幂等：已就绪的步骤会跳过，可反复调用。返回 (日志, 是否成功)。"""
     logs = []
 
     def log(s):
@@ -97,41 +101,85 @@ def do_setup():
 
     ok, out = probe(["python3", "--version"])
     if not ok:
-        log("❌ 未找到 python3，请先安装（macOS: xcode-select --install / Windows: python.org）。")
+        log("❌ 未找到 python3，无法自动配置。")
+        log("   macOS 请运行：xcode-select --install")
+        log("   Windows 请到 python.org 安装并勾选 Add to PATH")
         return "\n".join(logs), False
     log("✅ python3: " + out)
 
-    if not os.path.isdir(UPSTREAM):
+    # 1) 上游仓库（airlift.py 来源）
+    if os.path.isdir(UPSTREAM):
+        log("✅ 上游仓库已存在，跳过克隆")
+    else:
         log("⏳ 克隆上游仓库 airbeep-calltone-research ...")
         out, rc = sh(["git", "clone", "--depth", "1", UPSTREAM_URL, UPSTREAM], timeout=600)
-        log(out.strip()[-2000:] if out.strip() else "")
+        if out.strip():
+            log(out.strip()[-1500:])
         if rc != 0:
-            log("❌ 克隆失败（检查网络）。")
+            log("❌ 克隆失败（检查网络后重试）。")
             return "\n".join(logs), False
         log("✅ 上游仓库就绪")
-    else:
-        log("✅ 上游仓库已存在")
 
-    log("⏳ 创建虚拟环境并安装 pymobiledevice3 ...")
-    out, rc = sh(["python3", "-m", "venv", VENV], timeout=300)
-    if rc != 0:
-        log(out[-1000:])
-        log("❌ venv 创建失败。")
-        return "\n".join(logs), False
-    pip = os.path.join(VENV, "bin", "pip")
-    if not os.path.isfile(pip):
-        pip = os.path.join(VENV, "Scripts", "pip.exe")
-    out, rc = sh([pip, "install", "pymobiledevice3"], timeout=900)
-    log(out.strip()[-1500:] if out.strip() else "")
-    if rc != 0:
-        log("❌ pymobiledevice3 安装失败。")
-        return "\n".join(logs), False
-    log("✅ pymobiledevice3 安装完成")
-    ok, _ = probe(["ffmpeg", "-version"])
-    if ok:
+    # 2) venv + pymobiledevice3（缺什么装什么）
+    venv_py = os.path.join(VENV, "bin", "python3")
+    if not os.path.isfile(venv_py):
+        venv_py = os.path.join(VENV, "Scripts", "python.exe")
+    need_pkg = (not os.path.isfile(venv_py)) or (probe([venv_py, "-c", "import pymobiledevice3"])[0] is False)
+    if not need_pkg:
+        log("✅ pymobiledevice3 已就绪，跳过安装")
+    else:
+        log("⏳ 创建虚拟环境并安装 pymobiledevice3 ...")
+        out, rc = sh(["python3", "-m", "venv", VENV], timeout=300)
+        if rc != 0:
+            log(out[-1000:])
+            log("❌ venv 创建失败。")
+            return "\n".join(logs), False
+        pip = os.path.join(VENV, "bin", "pip")
+        if not os.path.isfile(pip):
+            pip = os.path.join(VENV, "Scripts", "pip.exe")
+        out, rc = sh([pip, "install", "pymobiledevice3"], timeout=900)
+        if out.strip():
+            log(out.strip()[-1200:])
+        if rc != 0:
+            log("❌ pymobiledevice3 安装失败。")
+            return "\n".join(logs), False
+        log("✅ pymobiledevice3 安装完成")
+
+    # 3) ffmpeg：缺失则按平台自动安装（brew / winget）
+    if probe(["ffmpeg", "-version"])[0]:
         log("✅ ffmpeg 已就绪")
     else:
-        log("⚠️ 未检测到 ffmpeg：macOS 运行 brew install ffmpeg；Windows 运行 winget install Gyan.FFmpeg")
+        log("⏳ 未检测到 ffmpeg，开始自动安装 ...")
+        installed = False
+        if sys.platform == "darwin" and shutil.which("brew"):
+            log("   使用 Homebrew 安装（可能需要输入密码）...")
+            out, rc = sh(["brew", "install", "ffmpeg"], timeout=1800)
+            if out.strip():
+                log(out.strip()[-1200:])
+            installed = rc == 0 and probe(["ffmpeg", "-version"])[0]
+            if installed:
+                log("✅ ffmpeg 安装完成（brew）")
+        elif sys.platform.startswith("win") and shutil.which("winget"):
+            log("   使用 winget 安装（可能弹出 UAC 确认）...")
+            out, rc = sh(["winget", "install", "--id", "Gyan.FFmpeg", "-e",
+                          "--accept-source-agreements", "--accept-package-agreements"],
+                         timeout=1800)
+            if out.strip():
+                log(out.strip()[-1200:])
+            installed = rc == 0 and probe(["ffmpeg", "-version"])[0]
+            if installed:
+                log("✅ ffmpeg 安装完成（winget）")
+            else:
+                log("ℹ️ winget 已执行；若仍检测不到 ffmpeg，请重开本应用后再试（PATH 需刷新）。")
+        if not installed and not probe(["ffmpeg", "-version"])[0]:
+            if sys.platform == "darwin":
+                log("⚠️ 未能自动安装 ffmpeg：请先安装 Homebrew（brew.sh），或手动运行 brew install ffmpeg。")
+            elif sys.platform.startswith("win"):
+                log("⚠️ 未能自动安装 ffmpeg：请手动运行 winget install Gyan.FFmpeg。")
+            else:
+                log("⚠️ 未能自动安装 ffmpeg：请用系统包管理器安装（如 sudo apt install ffmpeg）。")
+            log("   （ffmpeg 仅在为其他机型重新生成静音件时才需要；同机型用附带静音件可忽略。）")
+
     log("🎉 环境配置完成，可以开始「设备状态 → 执行静音 → 校验」。")
     return "\n".join(logs), True
 

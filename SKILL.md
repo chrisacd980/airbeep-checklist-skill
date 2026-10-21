@@ -50,7 +50,7 @@ AirBeep 通过 **macOS 端 AirTraffic 沙盒逃逸路线**，把 iOS 系统里"�
 安装包（dmg 里的 app / Windows 安装包）不只是"打开卡片"——它自带一套**本地运行时**，让卡片可以直接在本机完成真机操作：
 - `airbeep-desktop.py`（纯 Python 标准库）：本地 HTTP 服务（127.0.0.1:8765），托管卡片并提供 `/api/status|apply|restore|verify`（转调 `airbeep.sh`）与 `/api/env`、`/api/setup`（环境检测与一键配置：克隆上游仓 + 建 venv + 装 pymobiledevice3）。
 - app / 快捷方式启动时自动拉起该服务再打开卡片；卡片顶部出现「🖥️ 本地运行时」面板（仅在本地服务模式下显示），按钮直接执行：**一键配置环境 → 设备状态 → 执行静音 → 校验 → 恢复原生**，输出实时显示。执行前有隐私法律确认。
-- 运行时所需环境：python3 + pymobiledevice3 + 上游仓（airlift.py）+ ffmpeg（macOS 用 `brew install ffmpeg`，Windows 用 `winget install Gyan.FFmpeg`）。缺项时面板会显示 ❌ 并可一键配置；python3 缺失时按提示安装（macOS: `xcode-select --install`；Windows: python.org）。
+- 运行时所需环境：python3 + pymobiledevice3 + 上游仓（airlift.py）+ ffmpeg。缺项时面板显示 ❌，点「⚙️ 一键配置环境」即可由软件直接自动安装修复（无需手动复制命令；ffmpeg 也由软件自动装：macOS 走 brew、Windows 走 winget），配置流程幂等可反复执行；仅 python3 缺失需按提示安装（macOS: `xcode-select --install`；Windows: python.org）。
 - 直接以文件方式打开卡片（无本地服务）时面板自动隐藏，退回"由本地智能体执行"的原流程——两种模式自动适配。
 ```bash
 # 1) 设备体检（确认无 airlift-* 残留、设备可连）

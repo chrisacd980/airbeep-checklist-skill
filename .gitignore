@@ -1,0 +1,17 @@
+# 本地运行时生成的大目录，不入库
+.venv-desktop/
+airbeep-calltone-research/
+__pycache__/
+*.pyc
+
+# 打包中间产物
+*.dmg
+*.exe
+*.7z
+*.zip
+payload*/
+win-payload/
+
+# 系统入口
+*.app/
+*.lnk

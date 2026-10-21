@@ -1,6 +1,6 @@
 {
-  "version": "1.0.4",
+  "version": "1.0.5",
   "date": "2026-10-21",
-  "notes_zh": "安装包内置本地运行时（airbeep-desktop.py）：卡片新增「本地运行时」面板，可一键配置环境并直接在本机执行 设备状态/静音/校验/恢复；Win 选项卡 logo 更新为新版 Windows 样式；爱思助手改为官网下载页跳转（不再写具体版本）。",
-  "notes_en": "Installers now bundle a local runtime (airbeep-desktop.py): the card gains a Local Runtime panel to set up the environment and run status/apply/verify/restore directly on this machine; Windows tab logo updated; i4Tools link now points to the official download page."
+  "notes_zh": "一键配置环境升级：ffmpeg 现由软件自动安装（macOS 走 brew、Windows 走 winget），检测面板出现 ❌ 时直接点「一键配置环境」即可自动修复，无需手动复制命令；配置流程幂等，可反复执行。",
+  "notes_en": "One-click setup upgraded: ffmpeg is now installed automatically by the software (brew on macOS, winget on Windows); when the environment panel shows ❌, just click “One-click setup” and everything is fixed automatically — no manual commands. The setup flow is idempotent and safe to re-run."
 }
