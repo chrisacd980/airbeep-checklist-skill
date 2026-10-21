@@ -39,6 +39,23 @@
   }
   .lang.active { background: var(--accent); color: #fff; border-color: var(--accent); }
   .sub { color: var(--muted); font-size: 13px; margin-bottom: 20px; }
+  /* 顶端致谢文本框（替代原致谢弹窗，避免遮挡按钮） */
+  .creditbox {
+    background: #eef6fc; border: 1px solid #cfe3f3; border-left: 4px solid var(--accent);
+    border-radius: 10px; padding: 11px 16px; font-size: 12.5px; line-height: 1.7;
+    color: #2c3e50; margin-bottom: 16px;
+  }
+  .creditbox b { color: var(--accent); }
+  /* 一键安装框：任意本地智能体获取本技能 */
+  .installbox {
+    background: #f3f9f4; border: 1px solid #cfe9d4; border-left: 4px solid var(--green);
+    border-radius: 10px; padding: 14px 16px; margin-bottom: 22px;
+  }
+  .installbox .install-title { font-size: 13px; font-weight: 600; color: #1e8449; margin-bottom: 8px; }
+  .installbox .codeblock { margin: 0 0 10px; }
+  .installbox .dlbtn { background: var(--green); }
+  .installbox .dlbtn:hover { filter: brightness(1.05); }
+  .installbox .install-note { font-size: 12px; color: #55606c; line-height: 1.6; margin-top: 8px; }
   .card {
     background: var(--card);
     border: 1px solid var(--border);
@@ -170,6 +187,13 @@
 </head>
 <body>
 <div class="wrap">
+  <div class="creditbox" id="t-credit"></div>
+  <div class="installbox">
+    <div class="install-title" id="t-install-title"></div>
+    <div class="codeblock" id="install-cmd">curl -fsSL https://raw.githubusercontent.com/chrisacd980/airbeep-checklist-skill/main/install.sh | bash</div>
+    <button class="dlbtn" id="copy-install"></button>
+    <div class="install-note" id="t-install-note"></div>
+  </div>
   <div class="topbar">
     <h1 id="t-title"></h1>
     <div class="langswitch">
@@ -327,10 +351,15 @@ winget install AppleiTunes</span></div>
       confirmBody: "该命令仅适用于测试手机通话质量，如果您有真实通话录音需求，请在征得通话对方同意后再执行，以便保护双方隐私，避免法律纠纷。",
       confirmOk: "我已知晓，确认执行",
       confirmCancel: "取消",
-      confirmDone: "✅ 已确认授权执行 AirBeep。请返回 WorkBuddy 对话，告诉助手「执行」，由其在终端运行 airlift.py 完成真机静音替换（含自动备份原件）。",
+      confirmDone: "✅ 已确认授权执行 AirBeep。请返回你的本地智能体对话，让助手执行 airlift.py 完成真机静音替换（含自动备份原件）。",
       creditTitle: "💡 致谢",
       creditBody: "感谢 AirBeep 开发团队开源，本人只是在原作者成果上添加卡片式操作外壳。",
-      creditOk: "知道了"
+      creditOk: "知道了",
+      creditBox: "💡 <b>致谢：</b>感谢 AirBeep 开发团队开源，本卡片仅在其原造成果之上添加了卡片式操作外壳。",
+      installTitle: "🚀 在任何本地智能体里一键获取本技能",
+      installNote: "复制下面这行命令，在你常用的<b>本地智能体</b>（WorkBuddy / CodeBuddy / Claude Code / Cursor 等具备终端的助手）对话中发送即可自动安装：",
+      copyInstall: "📋 复制安装命令",
+      copied: "✅ 已复制安装命令"
     },
     en: {
       title: "AirBeep Silence Tool · Operation Checklist",
@@ -380,10 +409,15 @@ winget install AppleiTunes</span></div>
       confirmBody: "This command is for testing phone call quality only. If you need to record a real call, please obtain the other party's consent before proceeding, so as to protect both parties' privacy and avoid legal disputes.",
       confirmOk: "I Understand, Proceed",
       confirmCancel: "Cancel",
-      confirmDone: "✅ Authorization confirmed. Please return to the WorkBuddy chat and tell the assistant to 'execute' — they will run airlift.py on the terminal to perform the real device tone replacement (with automatic original backup).",
+      confirmDone: "✅ Authorization confirmed. Please return to your local agent chat and ask it to run airlift.py on the terminal for the real-device tone replacement (with automatic original backup).",
       creditTitle: "💡 Credits",
       creditBody: "Thanks to the AirBeep development team for open-sourcing; I only added a card-style operation shell on top of the original author's work.",
-      creditOk: "Got it"
+      creditOk: "Got it",
+      creditBox: "💡 <b>Credits:</b> Thanks to the AirBeep development team for open-sourcing; this card only adds a card-style operation shell on top of the original author's work.",
+      installTitle: "🚀 Get this skill in ANY local agent (one line)",
+      installNote: "Copy the line below and send it in your favorite <b>local agent</b> (WorkBuddy / CodeBuddy / Claude Code / Cursor or any assistant with a terminal) — it installs automatically:",
+      copyInstall: "📋 Copy install command",
+      copied: "✅ Install command copied"
     }
   };
 
@@ -401,7 +435,6 @@ winget install AppleiTunes</span></div>
   let supportVersion = null;
   let curInfo = { key: "default", args: {} };
   let curTip = -1;
-  let creditAck = false;
 
   let toastTimer = null;
   function toast(msg) {
@@ -553,22 +586,6 @@ winget install AppleiTunes</span></div>
     updateProgress();
   }
 
-  // 所有点按最前面：首次点按先弹致谢弹窗，确认后再执行原逻辑
-  function clickBtn(i) {
-    if (!creditAck) { showCredit(() => doClick(i)); return; }
-    doClick(i);
-  }
-
-  // 致谢弹窗（信息样式）
-  function showCredit(onOk) {
-    const m = document.getElementById("creditModal");
-    document.getElementById("cr-title").textContent = L.creditTitle;
-    document.getElementById("cr-body").textContent = L.creditBody;
-    document.getElementById("cr-ok").textContent = L.creditOk;
-    m.classList.add("show");
-    document.getElementById("cr-ok").onclick = () => { m.classList.remove("show"); creditAck = true; onOk(); };
-  }
-
   // 第 3 列执行前的隐私/法律确认弹窗
   function showExecConfirm(onOk) {
     const m = document.getElementById("execConfirm");
@@ -609,7 +626,7 @@ winget install AppleiTunes</span></div>
     });
   });
 
-  buttons.forEach((btn, i) => btn.addEventListener("click", () => clickBtn(i)));
+  buttons.forEach((btn, i) => btn.addEventListener("click", () => doClick(i)));
 
   document.getElementById("reset").addEventListener("click", () => {
     state = ["p","p","p","p","p","p","p"];
@@ -639,6 +656,10 @@ winget install AppleiTunes</span></div>
     document.documentElement.lang = lang === "zh" ? "zh-CN" : "en";
     document.getElementById("t-title").textContent = L.title;
     document.getElementById("t-sub").textContent = L.sub;
+    document.getElementById("t-credit").innerHTML = L.creditBox;
+    document.getElementById("t-install-title").textContent = L.installTitle;
+    document.getElementById("t-install-note").innerHTML = L.installNote;
+    document.getElementById("copy-install").textContent = L.copyInstall;
     document.getElementById("t-warn").innerHTML = L.warn;
     document.getElementById("t-tabmac").textContent = L.tabmac;
     document.getElementById("t-tabwin").textContent = L.tabwin;
@@ -659,11 +680,6 @@ winget install AppleiTunes</span></div>
       document.getElementById("ec-body").textContent = L.confirmBody;
       document.getElementById("ec-ok").textContent = L.confirmOk;
       document.getElementById("ec-cancel").textContent = L.confirmCancel;
-    }
-    if (document.getElementById("creditModal") && document.getElementById("creditModal").classList.contains("show")) {
-      document.getElementById("cr-title").textContent = L.creditTitle;
-      document.getElementById("cr-body").textContent = L.creditBody;
-      document.getElementById("cr-ok").textContent = L.creditOk;
     }
     paintAll();
     updateProgress();
@@ -691,6 +707,16 @@ winget install AppleiTunes</span></div>
   document.getElementById("dl-mac").addEventListener("click", () => downloadScript("code-mac", "deploy-airbeep-mac.sh"));
   document.getElementById("dl-win").addEventListener("click", () => downloadScript("code-win", "deploy-airbeep-win.ps1"));
 
+  // 复制一键安装命令
+  document.getElementById("copy-install").addEventListener("click", () => {
+    const cmd = document.getElementById("install-cmd").innerText;
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(cmd).then(() => toast(L.copied)).catch(() => toast(L.copied));
+    } else {
+      toast(L.copied);
+    }
+  });
+
   applyLang("zh");
 </script>
   <!-- 执行前隐私/法律确认弹窗 -->
@@ -704,14 +730,5 @@ winget install AppleiTunes</span></div>
         <button id="ec-ok" class="btn-ok"></button>
       </div>
     </div>
-  <!-- 致谢弹窗（所有点按前首次出现） -->
-  <div id="creditModal" class="modal-overlay">
-    <div class="modal-box info">
-      <div class="modal-icon">💡</div>
-      <h3 id="cr-title"></h3>
-      <p id="cr-body"></p>
-      <div class="modal-btns"><button id="cr-ok" class="btn-ok"></button></div>
-    </div>
-  </div>
 </body>
 </html>

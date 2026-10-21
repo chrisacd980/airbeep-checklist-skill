@@ -10,12 +10,21 @@ AirBeep 通过 macOS / Windows 端的 AirTraffic 沙盒逃逸路线，把 iOS �
 
 > ⚠️ 法律与伦理：移除录音披露提示音会影响对方是否收到"正在录音"的通知。仅可在本人设备、当地法律允许、并已获对方知情 / 同意的情况下使用。
 
-## 安装（作为 WorkBuddy 用户级技能）
+## 安装 —— 一行命令装到任意本地智能体
+
+只要你的本地智能体（WorkBuddy / CodeBuddy / Claude Code / Cursor / 通义灵码 / Aider 等）具备终端，在它的对话里直接发送这一行即可自动克隆并安装：
 
 ```bash
-git clone https://github.com/chrisacd980/airbeep-checklist-skill.git \
-  ~/.workbuddy/skills/airbeep
+curl -fsSL https://raw.githubusercontent.com/chrisacd980/airbeep-checklist-skill/main/install.sh | bash
 ```
+
+`install.sh` 会自动探测常见智能体的 skills 目录（`.workbuddy` / `.codebuddy` / `.claude` / `.cursor` / `.qwen` / `.aider`），未命中则回退到 WorkBuddy 路径。安装后重启 / 刷新智能体即可。
+
+> 也可以手动克隆（等价于上面脚本的兜底路径）：
+> ```bash
+> git clone https://github.com/chrisacd980/airbeep-checklist-skill.git \
+>   ~/.workbuddy/skills/airbeep
+> ```
 
 克隆后重启 / 刷新 WorkBuddy 会话即可在「我的技能」中看到 `airbeep`。
 
@@ -27,7 +36,12 @@ git clone https://github.com/chrisacd980/airbeep-checklist-skill.git \
 open ~/.workbuddy/skills/airbeep/airbeep-checklist.html
 ```
 
-检查卡包含：
+检查卡（页面最顶端）还包含：
+
+- **致谢文本框**：说明本卡片仅为原作者成果之上的卡片式操作外壳（文本框形式，不再用弹窗，避免遮挡按钮）。
+- **「🚀 在任何本地智能体里一键获取本技能」安装框**：含一行可一键复制的安装命令，方便把本技能装到其他本地智能体。
+
+检查卡主体包含：
 
 1. **红色警示牌**：提醒关闭 iPhone 自动升级（升级到 iOS 27.2 正式版会导致方案失效）。
 2. **两个部署选项卡**（带 Logo）：

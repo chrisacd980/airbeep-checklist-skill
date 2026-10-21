@@ -10,12 +10,21 @@ AirBeep uses the AirTraffic sandbox-escape route (macOS / Windows) to replace th
 
 > ⚠️ Legal & ethics: removing the disclosure tone affects whether the other party is notified that a call is being recorded. Use only on your own device, where local law permits, and with the other party's informed consent.
 
-## Install (as a WorkBuddy user-level skill)
+## Install — one line for ANY local agent
+
+If your local agent (WorkBuddy / CodeBuddy / Claude Code / Cursor / Tongyi Qianwen / Aider, etc.) has a terminal, just send this line in its chat — it auto-clones and installs:
 
 ```bash
-git clone https://github.com/chrisacd980/airbeep-checklist-skill.git \
-  ~/.workbuddy/skills/airbeep
+curl -fsSL https://raw.githubusercontent.com/chrisacd980/airbeep-checklist-skill/main/install.sh | bash
 ```
+
+`install.sh` auto-detects common agents' skills directories (`.workbuddy` / `.codebuddy` / `.claude` / `.cursor` / `.qwen` / `.aider`) and falls back to the WorkBuddy path. Restart / refresh the agent afterward.
+
+> Or clone manually (equivalent to the script's fallback path):
+> ```bash
+> git clone https://github.com/chrisacd980/airbeep-checklist-skill.git \
+>   ~/.workbuddy/skills/airbeep
+> ```
 
 Restart / refresh your WorkBuddy session and `airbeep` appears under “My Skills”.
 
@@ -27,7 +36,12 @@ Open the checklist in a browser (use the 中文 / EN toggle at the top right):
 open ~/.workbuddy/skills/airbeep/airbeep-checklist.html
 ```
 
-The checklist includes:
+The checklist (at the very top of the page) also includes:
+
+- **Credit text box**: notes that this card only adds a card-style operation shell on top of the original author's work (now a text box, not a popup, so it never blocks the buttons).
+- **“🚀 Get this skill in ANY local agent (one line)” install box**: a single copy-able install command to bring this skill into other local agents.
+
+The checklist body includes:
 
 1. **Red warning banner**: keep iPhone automatic updates OFF (upgrading to iOS 27.2 final breaks the method).
 2. **Two deploy tabs** (with logos):

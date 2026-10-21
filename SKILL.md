@@ -37,7 +37,7 @@ AirBeep 通过 **macOS 端 AirTraffic 沙盒逃逸路线**，把 iOS 系统里"�
 ## 本技能附带资产（随 `git clone` 一起拿到，无需额外下载）
 - `silence-assets/my-silent-StartDisclosureWithTone.m4a`（1381 B）— Chris 实测设备的等时长静音件（开始提示音）
 - `silence-assets/my-silent-StopDisclosure.caf`（182113 B）— 同上（停止提示音）
-- `airbeep-checklist.html` — 交互式操作检查卡（中/英切换、关闭自动升级警示牌、Mac/Win 部署脚本下载、6 步状态机）
+- `airbeep-checklist.html` — 交互式操作检查卡（中/英切换、顶端致谢文本框、一键安装框、关闭自动升级警示牌、Mac/Win 部署脚本下载、7 步状态机）
 - 这两个静音件已针对 iPhone17,1 / iOS 27.2 beta 2 生成；**同机型同版本可直接 replace**，其他机型请先按事实 #2 重新生成。
 
 ## macOS 路线核心命令（在装好 pymobiledevice3 的 venv 中运行）
@@ -63,10 +63,24 @@ airlift.py replace /var/mobile/Library/CallServices/Greetings/default/StopDisclo
 
 ## 交互式操作检查卡（airbeep-checklist.html）
 随技能附带的 `airbeep-checklist.html` 是可直接在浏览器打开的操作向导，包含：
+- **页面最顶端「致谢文本框」**：说明本卡片仅为原作者成果之上的卡片式操作外壳（文本框形式，不再用弹窗，避免遮挡按钮导致无法点击）。
+- **「🚀 在任何本地智能体里一键获取本技能」安装框**：含一行可一键复制的安装命令，方便把本技能装到其他本地智能体（见下方「让任意本地智能体都能用」）。
 - 顶部红色警示牌：提醒**关闭 iPhone 自动升级**（升级到 iOS 27.2 正式版会导致方案失效）。
 - 两个带 Logo 部署选项卡：**Mac（M 芯片）** 与 **Win 系统**，各自提供对应系统的「下载部署脚本」按钮（`.sh` / `.ps1`）。
-- 下方 6 步操作检查卡：① 手动检查（点按后自动抓取 GitHub README 显示支持版本区间，如 `27.0 – 27.2 Beta 2`）② 开发者模式（点按后显示「已开启并连接电脑」）③ 执行 AirBeep（点按弹隐私确认框，确认后显示「已执行」——真机替换由助手在终端执行）④ 自行通话测试（通话测试，二选一：成功／未成功）⑤ 重启后测试（重启测试，二选一）⑥ 恢复原生方案（独立列，点按后显示「已恢复」——真机还原由助手执行）。前 5 步需按序点击；第 6 列随时可点，点后除版本号与「已恢复」外全部变红。
+- 下方 7 步操作检查卡：① 手动检查（点按后自动抓取 GitHub README 显示支持版本区间，如 `27.0 – 27.2 Beta 2`）② 开发者模式（点按后显示「已开启并连接电脑」）③ 执行 AirBeep（点按弹隐私确认框，确认后显示「已执行」——真机替换由助手在终端执行）④ 自行通话测试（通话测试，二选一：成功／未成功）⑤ 重启后测试（重启测试，二选一）⑥ 关闭开发者模式（独立提示，红→绿）⑦ 恢复原生方案（独立列，点按后显示「已恢复」——真机还原由助手执行）。前 6 步需按序点击；第 7 列随时可点，点后除版本号与「已恢复」外全部变红。
 - 打开方式：浏览器直接打开 `airbeep-checklist.html` 即可（无需服务器）。
+
+## 让任意本地智能体都能用（一行命令 / One line for ANY local agent）
+本技能与具体智能体无关：只要对方的**本地智能体具备终端/代码执行能力**（WorkBuddy、CodeBuddy、Claude Code、Cursor、通义灵码、Aider 等），在其对话里发送下面这行命令即可自动克隆并安装到对应 skills 目录：
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/chrisacd980/airbeep-checklist-skill/main/install.sh | bash
+```
+
+- `install.sh` 会自动探测常见智能体的 skills 目录（`.workbuddy` / `.codebuddy` / `.claude` / `.cursor` / `.qwen` / `.aider`），未命中则回退到 WorkBuddy 路径。
+- 安装后重启（或刷新）智能体，说「用 airbeep 技能消除 iPhone 通话录音提示音」即可调用。
+- 纯云端聊天机器人（如豆包网页版 / Kimi 网页版）无法执行 Shell，但仍可手动 `git clone` 本仓库、按 README 使用卡片与脚本——知识层对所有智能体通用，真机改写仅限本机智能体。
+- 同一行命令也写进了 `airbeep-checklist.html` 顶部的安装框，用户可从卡片一键复制。
 
 ## 版本监测
 不再依赖每日自动化。用户点检查卡里的「手动检查」按钮时，技能会实时抓取仓库 README 的 Requirements 支持区间并展示版本号；或需要时重新用 WebFetch 抓取仓库核对。用户问"AirBeep 现在支持哪个 iOS 版本"时，优先用「手动检查」结果或重新抓取仓库。
