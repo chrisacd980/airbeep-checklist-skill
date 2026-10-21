@@ -46,16 +46,6 @@
     color: #2c3e50; margin-bottom: 16px;
   }
   .creditbox b { color: var(--accent); }
-  /* 一键安装框：任意本地智能体获取本技能 */
-  .installbox {
-    background: #f3f9f4; border: 1px solid #cfe9d4; border-left: 4px solid var(--green);
-    border-radius: 10px; padding: 14px 16px; margin-bottom: 22px;
-  }
-  .installbox .install-title { font-size: 13px; font-weight: 600; color: #1e8449; margin-bottom: 8px; }
-  .installbox .codeblock { margin: 0 0 10px; }
-  .installbox .dlbtn { background: var(--green); }
-  .installbox .dlbtn:hover { filter: brightness(1.05); }
-  .installbox .install-note { font-size: 12px; color: #55606c; line-height: 1.6; margin-top: 8px; }
   .card {
     background: var(--card);
     border: 1px solid var(--border);
@@ -188,12 +178,6 @@
 <body>
 <div class="wrap">
   <div class="creditbox" id="t-credit"></div>
-  <div class="installbox">
-    <div class="install-title" id="t-install-title"></div>
-    <div class="codeblock" id="install-cmd">curl -fsSL https://raw.githubusercontent.com/chrisacd980/airbeep-checklist-skill/main/install.sh | bash</div>
-    <button class="dlbtn" id="copy-install"></button>
-    <div class="install-note" id="t-install-note"></div>
-  </div>
   <div class="topbar">
     <h1 id="t-title"></h1>
     <div class="langswitch">
@@ -355,11 +339,7 @@ winget install AppleiTunes</span></div>
       creditTitle: "💡 致谢",
       creditBody: "感谢 AirBeep 开发团队开源，本人只是在原作者成果上添加卡片式操作外壳。",
       creditOk: "知道了",
-      creditBox: "💡 <b>致谢：</b>感谢 AirBeep 开发团队开源，本卡片仅在其原造成果之上添加了卡片式操作外壳。",
-      installTitle: "🚀 在任何本地智能体里一键获取本技能",
-      installNote: "复制下面这行命令，在你常用的<b>本地智能体</b>（WorkBuddy / CodeBuddy / Claude Code / Cursor 等具备终端的助手）对话中发送即可自动安装：",
-      copyInstall: "📋 复制安装命令",
-      copied: "✅ 已复制安装命令"
+      creditBox: "💡 <b>致谢：</b>感谢 AirBeep 开发团队开源，本卡片仅在其原造成果之上添加了卡片式操作外壳。"
     },
     en: {
       title: "AirBeep Silence Tool · Operation Checklist",
@@ -413,11 +393,7 @@ winget install AppleiTunes</span></div>
       creditTitle: "💡 Credits",
       creditBody: "Thanks to the AirBeep development team for open-sourcing; I only added a card-style operation shell on top of the original author's work.",
       creditOk: "Got it",
-      creditBox: "💡 <b>Credits:</b> Thanks to the AirBeep development team for open-sourcing; this card only adds a card-style operation shell on top of the original author's work.",
-      installTitle: "🚀 Get this skill in ANY local agent (one line)",
-      installNote: "Copy the line below and send it in your favorite <b>local agent</b> (WorkBuddy / CodeBuddy / Claude Code / Cursor or any assistant with a terminal) — it installs automatically:",
-      copyInstall: "📋 Copy install command",
-      copied: "✅ Install command copied"
+      creditBox: "💡 <b>Credits:</b> Thanks to the AirBeep development team for open-sourcing; this card only adds a card-style operation shell on top of the original author's work."
     }
   };
 
@@ -657,9 +633,6 @@ winget install AppleiTunes</span></div>
     document.getElementById("t-title").textContent = L.title;
     document.getElementById("t-sub").textContent = L.sub;
     document.getElementById("t-credit").innerHTML = L.creditBox;
-    document.getElementById("t-install-title").textContent = L.installTitle;
-    document.getElementById("t-install-note").innerHTML = L.installNote;
-    document.getElementById("copy-install").textContent = L.copyInstall;
     document.getElementById("t-warn").innerHTML = L.warn;
     document.getElementById("t-tabmac").textContent = L.tabmac;
     document.getElementById("t-tabwin").textContent = L.tabwin;
@@ -706,16 +679,6 @@ winget install AppleiTunes</span></div>
   }
   document.getElementById("dl-mac").addEventListener("click", () => downloadScript("code-mac", "deploy-airbeep-mac.sh"));
   document.getElementById("dl-win").addEventListener("click", () => downloadScript("code-win", "deploy-airbeep-win.ps1"));
-
-  // 复制一键安装命令
-  document.getElementById("copy-install").addEventListener("click", () => {
-    const cmd = document.getElementById("install-cmd").innerText;
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(cmd).then(() => toast(L.copied)).catch(() => toast(L.copied));
-    } else {
-      toast(L.copied);
-    }
-  });
 
   applyLang("zh");
 </script>

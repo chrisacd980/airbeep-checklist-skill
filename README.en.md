@@ -39,7 +39,6 @@ open ~/.workbuddy/skills/airbeep/airbeep-checklist.html
 The checklist (at the very top of the page) also includes:
 
 - **Credit text box**: notes that this card only adds a card-style operation shell on top of the original author's work (now a text box, not a popup, so it never blocks the buttons).
-- **“🚀 Get this skill in ANY local agent (one line)” install box**: a single copy-able install command to bring this skill into other local agents.
 
 The checklist body includes:
 
