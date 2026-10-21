@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>AirBeep 静音功能 · 操作检查卡</title>
+<style>
+  :root {
+    --red: #e74c3c;
+    --red-dark: #c0392b;
+    --green: #27ae60;
+    --green-dark: #1e8449;
+    --yellow: #f1c40f;
+    --yellow-dark: #b7950b;
+    --orange: #e67e22;
+    --orange-dark: #ca6f1e;
+    --bg: #f5f7fa;
+    --card: #ffffff;
+    --border: #e1e6ec;
+    --text: #2c3e50;
+    --muted: #7f8c8d;
+    --accent: #2980b9;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    padding: 32px 16px;
+  }
+  .wrap { max-width: 1080px; margin: 0 auto; }
+  h1 { font-size: 22px; margin: 0 0 4px; }
+  .sub { color: var(--muted); font-size: 13px; margin-bottom: 20px; }
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 22px;
+    box-shadow: 0 4px 18px rgba(0,0,0,0.05);
+  }
+  .grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px; }
+  .label {
+    text-align: center; font-size: 13px; font-weight: 600;
+    padding: 10px 4px; background: #eef2f7; border-radius: 8px;
+    border: 1px solid var(--border); line-height: 1.35;
+  }
+  .label.independent { background: #fff6e9; border-color: #f0d9b0; color: #b9770e; }
+  .cell { display: flex; flex-direction: column; gap: 8px; }
+  .btn {
+    font-size: 13px; font-weight: 600; color: #fff;
+    border: none; border-radius: 8px; padding: 16px 4px;
+    cursor: pointer; transition: transform .12s ease, background .2s ease;
+    background: var(--red); box-shadow: 0 2px 0 var(--red-dark);
+    user-select: none; line-height: 1.4; min-height: 58px;
+    width: 100%;
+  }
+  .btn:hover:not(.done) { filter: brightness(1.05); }
+  .btn:active:not(.done) { transform: translateY(2px); box-shadow: none; }
+  .btn.done { background: var(--green); box-shadow: 0 2px 0 var(--green-dark); }
+  .btn.done:active { transform: none; }
+  .btn.independent { background: var(--orange); box-shadow: 0 2px 0 var(--orange-dark); }
+  .btn.independent.done { background: var(--green); box-shadow: 0 2px 0 var(--green-dark); }
+  .btn.shake { animation: shake .35s; }
+  @keyframes shake {
+    0%,100% { transform: translateX(0); }
+    20% { transform: translateX(-6px); }
+    40% { transform: translateX(6px); }
+    60% { transform: translateX(-4px); }
+    80% { transform: translateX(4px); }
+  }
+  .subs { display: none; gap: 6px; }
+  .subs.show { display: flex; }
+  .subbtn {
+    flex: 1; font-size: 12px; font-weight: 600; color: #fff;
+    border: none; border-radius: 6px; padding: 9px 2px; cursor: pointer;
+    transition: transform .12s ease;
+  }
+  .subbtn:active { transform: translateY(2px); }
+  .subbtn.fail { background: var(--yellow); color: #6b5900; box-shadow: 0 2px 0 var(--yellow-dark); }
+  .subbtn.ok { background: var(--green); box-shadow: 0 2px 0 var(--green-dark); }
+  .divider { height: 1px; background: var(--border); margin: 20px 0 16px; }
+  .info {
+    background: #f0f6fc; border: 1px solid #cfe3f3; border-radius: 10px;
+    padding: 14px 16px; font-size: 13px; line-height: 1.6;
+    color: #2c3e50; min-height: 20px;
+  }
+  .info b { color: var(--accent); }
+  .info.warn { background: #fdf3e0; border-color: #f0d9b0; }
+  .info.warn b { color: #b9770e; }
+  .tips { margin-top: 14px; }
+  .tips-title { font-size: 13px; font-weight: 600; color: var(--muted); margin-bottom: 8px; }
+  .tips ul { list-style: none; margin: 0; padding: 0; }
+  .tips li {
+    font-size: 12.5px; color: #55606c; line-height: 1.7;
+    padding: 7px 12px; border-left: 3px solid transparent; border-radius: 6px;
+    margin-bottom: 2px;
+  }
+  .tips li .step { font-weight: 600; color: var(--text); }
+  .tips li.active { background: #eef6fc; border-left-color: var(--accent); }
+  .tips li.active .step { color: var(--accent); }
+  .bar { display: flex; justify-content: space-between; align-items: center; margin-top: 16px; }
+  .progress { font-size: 13px; color: var(--muted); }
+  .reset {
+    font-size: 12px; color: var(--accent); background: none;
+    border: 1px solid #cfe3f3; border-radius: 6px; padding: 6px 12px; cursor: pointer;
+  }
+  .reset:hover { background: #eef6fc; }
+  .tag { display:inline-block; font-size:11px; padding:1px 7px; border-radius:10px; background:#fde8d0; color:#b9770e; margin-left:6px; vertical-align:middle; }
+  .warnbanner {
+    background: #fdecea; border: 1px solid #f1a9a0; border-left: 4px solid #e74c3c;
+    color: #922b21; border-radius: 10px; padding: 12px 16px;
+    font-size: 13px; line-height: 1.7; margin-bottom: 18px;
+  }
+  .warnbanner b { color: #c0392b; }
+  .tabs { display: flex; gap: 8px; margin-bottom: 14px; }
+  .tab {
+    flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px;
+    font-size: 14px; font-weight: 600; color: var(--muted);
+    background: #f1f4f8; border: 1px solid var(--border); border-radius: 10px;
+    padding: 12px; cursor: pointer; transition: all .15s;
+  }
+  .tab.active { background: #fff; color: var(--text); border-color: var(--accent); box-shadow: 0 2px 8px rgba(41,128,185,.12); }
+  .tab svg { width: 18px; height: 18px; }
+  .tabpanel { border: 1px solid var(--border); border-radius: 10px; padding: 16px; margin-bottom: 18px; background: #fbfcfe; }
+  .tabpanel.hidden { display: none; }
+  .tabpanel h3 { margin: 0 0 8px; font-size: 14px; }
+  .tabpanel ul { margin: 6px 0; padding-left: 18px; }
+  .tabpanel p, .tabpanel li { font-size: 12.5px; color: #55606c; line-height: 1.7; }
+  .tabpanel code { background:#eef2f7; padding:1px 5px; border-radius:4px; font-size:12px; }
+  .req { background:#eef6fc; border-radius:8px; padding:8px 12px; margin:8px 0; font-size:12px; color:#2c3e50; }
+  .codeblock { position: relative; background:#1e2733; color:#e6edf3; border-radius:8px; padding:12px 14px; font-family: ui-monospace, Menlo, Consolas, monospace; font-size:12px; white-space:pre; overflow-x:auto; margin:10px 0; line-height:1.6; }
+  .dlbtn { display:inline-block; font-size:12px; color:#fff; background:var(--accent); border:none; border-radius:6px; padding:7px 14px; cursor:pointer; margin-top:4px; }
+  .dlbtn:hover { filter:brightness(1.05); }
+  .note { font-size:12px; color:#b9770e; background:#fff6e9; border:1px solid #f0d9b0; border-radius:8px; padding:8px 12px; margin-top:10px; line-height:1.6; }
+  .toast {
+    position: fixed; left: 50%; bottom: 30px;
+    transform: translateX(-50%) translateY(20px);
+    background: #2c3e50; color: #fff; padding: 10px 18px;
+    border-radius: 8px; font-size: 13px; opacity: 0; pointer-events: none;
+    transition: opacity .25s, transform .25s; z-index: 50;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>AirBeep 静音功能 · 操作检查卡</h1>
+  <div class="sub">按顺序从左到右完成前 5 步；第 6 列「恢复原生方案」可独立随时执行。</div>
+
+  <div class="card">
+    <div class="warnbanner">⚠️ <b>特别提示：</b>请务必<b>关闭 iPhone 系统自动升级</b>（设置 › 通用 › 软件更新 › 自动更新，全部关掉）。一旦自动升级，可能导致 AirBeep 静音功能<b>失效</b>；在官方更新适配指令前，将<b>无法再次开启</b>！</div>
+
+    <div class="tabs">
+      <button class="tab active" data-tab="mac">
+        <svg viewBox="0 0 384 512" aria-hidden="true"><path fill="currentColor" d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"/></svg>
+        Mac（M 芯片）
+      </button>
+      <button class="tab" data-tab="win">
+        <svg viewBox="0 0 448 512" aria-hidden="true"><path fill="#0078d4" d="M0 93.7l183.6-25.3v177.4H0V93.7zm0 324.6l183.6 25.3V214.9H0v203.4zm203.4-227.2v177.4h183.6V71.6L203.4 191.1zm0 227.2l183.6-25.3v177.4H203.4V418.3z"/></svg>
+        Win 系统
+      </button>
+    </div>
+
+    <div class="tabpanel" id="panel-mac">
+      <h3>Mac（M 芯片）部署脚本</h3>
+      <div class="codeblock"><span id="code-mac">git clone https://github.com/jiutinglifeng/airbeep-calltone-research
+cd airbeep-calltone-research
+python3 -m venv .venv &amp;&amp; source .venv/bin/activate
+pip install "pymobiledevice3==11.26.1"
+brew install ffmpeg</span></div>
+      <button class="dlbtn" id="dl-mac">⬇️ 下载 Mac 部署脚本（.sh）</button>
+      <div class="note">部署完成后，按本页下方「操作检查卡」逐步执行：手动检查 → 开发者模式 → 执行 AirBeep → 通话测试 → 重启后测试 → 恢复原生。</div>
+    </div>
+
+    <div class="tabpanel hidden" id="panel-win">
+      <h3>Win 系统部署脚本</h3>
+      <div class="codeblock"><span id="code-win">git clone https://github.com/jiutinglifeng/airbeep-calltone-research
+cd airbeep-calltone-research
+python -m venv .venv &amp;&amp; .venv\Scripts\activate
+pip install "pymobiledevice3==11.26.1"
+winget install ffmpeg
+winget install AppleiTunes</span></div>
+      <button class="dlbtn" id="dl-win">⬇️ 下载 Win 部署脚本（.ps1）</button>
+      <div class="note">Windows 路线用 <code>source-patched/</code> 下的脚本（不要用 macos-port）。部署完成后，按本页下方「操作检查卡」逐步执行。</div>
+    </div>
+
+    <div class="grid">
+      <!-- 第一行：标题 -->
+      <div class="label">ios支持版本</div>
+      <div class="label">开发者模式</div>
+      <div class="label">执行AirBeep</div>
+      <div class="label">自行通话测试</div>
+      <div class="label">重启后测试</div>
+      <div class="label independent">恢复原生方案<span class="tag">独立</span></div>
+
+      <!-- 第二行：按钮 -->
+      <div class="cell">
+        <button class="btn" id="btn0" data-id="0">手动检查</button>
+      </div>
+      <div class="cell">
+        <button class="btn" id="btn1" data-id="1">未开启</button>
+      </div>
+      <div class="cell">
+        <button class="btn" id="btn2" data-id="2">待执行</button>
+      </div>
+      <div class="cell">
+        <button class="btn" id="btn3" data-id="3">待测试</button>
+        <div class="subs" id="subs3">
+          <button class="subbtn fail" data-target="3">未成功</button>
+          <button class="subbtn ok" data-target="3">成功</button>
+        </div>
+      </div>
+      <div class="cell">
+        <button class="btn" id="btn4" data-id="4">待测试</button>
+        <div class="subs" id="subs4">
+          <button class="subbtn fail" data-target="4">未成功</button>
+          <button class="subbtn ok" data-target="4">成功</button>
+        </div>
+      </div>
+      <div class="cell">
+        <button class="btn independent" id="btn5" data-id="5">待恢复</button>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="info" id="info">点击「手动检查」—— 将自动到 GitHub 检索 AirBeep 当前支持的 iOS 版本区间。</div>
+
+    <div class="tips">
+      <div class="tips-title">📖 小科普 · 每一步在做什么</div>
+      <ul>
+        <li id="tip0"><span class="step">ios支持版本：</span>到 GitHub 仓库看 README 的 Requirements 支持区间，确认你的系统版本在列——不在列就千万别升级系统。</li>
+        <li id="tip1"><span class="step">开发者模式：</span>先连一次电脑让入口出现，再到「设置 → 隐私与安全性 → 开发者模式」打开开关 → 点「重新启动」→ 开机后点「打开」并输入锁屏密码。<br><span class="step">爱思助手路线：</span>爱思助手 → app 上方「工具箱」→ 虚拟定位 → 任意尝试定位 → 手机进入「设置 → 隐私与安全性 → 开发者模式」。</li>
+        <li id="tip2"><span class="step">执行AirBeep：</span>打开 AirBeep 拨动开关即把录音提示音换成等长静音，操作中别退出 app，替换完会自动留存原件备份。</li>
+        <li id="tip3"><span class="step">自行通话测试：</span>拨一通电话并开启录音，听听起止提示音是否已经消失（静音成功）。</li>
+        <li id="tip4"><span class="step">重启后测试：</span>重启手机后再打一通电话，确认静音在重启后没有失效。</li>
+        <li id="tip5"><span class="step">恢复原生方案：</span>在 AirBeep 里点「恢复」，即可从自动备份一键还原系统原始提示音，随时可逆。</li>
+      </ul>
+    </div>
+
+    <div class="bar">
+      <div class="progress" id="progress">进度：0 / 5（第 6 列独立）</div>
+      <button class="reset" id="reset">重置</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  const REPO_RAW = "https://raw.githubusercontent.com/jiutinglifeng/airbeep-calltone-research/main/README.md";
+  const FALLBACK = "27.0 – 27.2 Beta 2";
+
+  // 初始文案 / 完成文案
+  const INIT_TEXT = ["手动检查", "未开启", "待执行", "待测试", "待测试", "待恢复"];
+  const FINAL_TEXT = [null, "已开启并连接电脑", "已执行", "通话测试", "重启测试", "已恢复"];
+
+  const TIPS = [
+    null, // 第 1 步动态生成
+    "开发者模式已开启，设备可连接电脑侧载运行 AirBeep。✅ 下一步：执行 AirBeep。",
+    "AirBeep 已执行静音替换并读回校验通过，原件备份已自动留存。✅ 下一步：自行通话测试。",
+    "请拨打一通电话实测：起止提示音静音了吗？<b>成功</b>或<b>未成功</b>二选一。",
+    "请重启手机后再打一通电话：静音还有效吗？<b>成功</b>或<b>未成功</b>二选一。",
+    "已从备份恢复原生方案，系统原始提示音已恢复。"
+  ];
+
+  const OK_TIPS = {
+    3: "已选择 <b>成功</b> —— 通话测试通过，前面的步骤全部确认有效。✅ 下一步：重启后测试。",
+    4: "已选择 <b>成功</b> —— 重启后静音仍生效，整个流程全部完成！🎉"
+  };
+
+  const buttons = [0,1,2,3,4,5].map(i => document.getElementById("btn" + i));
+  const subsEls = { 3: document.getElementById("subs3"), 4: document.getElementById("subs4") };
+  const infoEl = document.getElementById("info");
+  const progressEl = document.getElementById("progress");
+  const toastEl = document.getElementById("toast");
+
+  // 状态：p=红(待) a=await(已点、等二选一) d=green(完成)
+  let state = ["p","p","p","p","p","p"];
+  let supportVersion = null;
+
+  let toastTimer = null;
+  function toast(msg) {
+    toastEl.textContent = msg;
+    toastEl.classList.add("show");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toastEl.classList.remove("show"), 2400);
+  }
+
+  function paint(i) {
+    const btn = buttons[i];
+    btn.classList.toggle("done", state[i] === "d");
+    if (state[i] === "d") {
+      btn.textContent = FINAL_TEXT[i] || supportVersion || FALLBACK;
+    } else if (state[i] === "a") {
+      btn.textContent = FINAL_TEXT[i];
+    } else {
+      btn.textContent = INIT_TEXT[i];
+    }
+  }
+
+  function paintAll() { for (let i = 0; i < 6; i++) paint(i); }
+
+  function resolvedCount() {
+    return state.slice(0,5).filter(s => s === "d").length;
+  }
+
+  function updateProgress() {
+    progressEl.textContent = `进度：${resolvedCount()} / 5（第 6 列独立）`;
+  }
+
+  function setInfo(html, warn) {
+    infoEl.innerHTML = html;
+    infoEl.classList.toggle("warn", !!warn);
+  }
+
+  function highlightTip(i) {
+    for (let k = 0; k < 6; k++)
+      document.getElementById("tip" + k).classList.toggle("active", k === i);
+  }
+
+  function formatVersion(raw) {
+    // 把 "27.0 – 27.2 B2" 这类写成易懂的 "27.0 – 27.2 Beta 2"
+    let v = raw.replace(/[–—]/g, " – ").replace(/\s+/g, " ").trim();
+    v = v.replace(/\bB(\d+)/gi, "Beta $1");
+    return v;
+  }
+
+  async function fetchSupportVersion() {
+    try {
+      const res = await fetch(REPO_RAW, { cache: "no-store" });
+      if (!res.ok) throw new Error("http " + res.status);
+      const text = await res.text();
+      const m = text.match(/iOS\/iPadOS\s+([0-9]{1,2}(?:\.[0-9]+)?(?:\s*[–—-]\s*[0-9]{1,2}(?:\.[0-9]+)?)?(?:\s*B[0-9]+)?)/i);
+      if (!m) throw new Error("pattern not found");
+      return { version: formatVersion(m[1]), live: true };
+    } catch (e) {
+      return { version: FALLBACK, live: false };
+    }
+  }
+
+  async function clickBtn(i) {
+    // 第 6 列：独立执行
+    if (i === 5) {
+      if (state[5] === "d") return;
+      state[5] = "d"; paint(5);
+      // 恢复原生方案：版本号(第1列)与已恢复保持绿，第2~5列全部变红
+      if (state[0] !== "d") { state[0] = "d"; } // 版本号强制变绿
+      for (let k = 1; k <= 4; k++) { state[k] = "p"; }
+      subsEls[3].classList.remove("show");
+      subsEls[4].classList.remove("show");
+      paintAll();
+      setInfo(TIPS[5], false); highlightTip(5);
+      return;
+    }
+
+    // 前 5 列按序
+    if (i > 0 && state[i-1] !== "d") {
+      buttons[i].classList.add("shake");
+      setTimeout(() => buttons[i].classList.remove("shake"), 360);
+      toast(`请先完成第 ${i} 步（当前按钮的前一步尚未变绿）`);
+      return;
+    }
+    if (state[i] === "d") return;
+
+    if (i === 0) {
+      // 手动检查：后台检索，按钮直接显示版本号
+      buttons[0].textContent = "检索中…";
+      buttons[0].style.opacity = ".7";
+      highlightTip(0);
+      const { version, live } = await fetchSupportVersion();
+      supportVersion = version;
+      buttons[0].style.opacity = "";
+      state[0] = "d"; paint(0);
+      setInfo(
+        `已检索到支持区间：<b>${version}</b>。请核对你手机的系统版本是否在此区间内——不在区间就千万别升级系统。` +
+        (live ? "" : "<br><small>⚠️ 在线检索失败，当前显示为缓存值。</small>"),
+        false
+      );
+      updateProgress();
+      return;
+    }
+
+    if (i === 3 || i === 4) {
+      state[i] = "a"; paint(i);
+      subsEls[i].classList.add("show");
+      setInfo(TIPS[i], false); highlightTip(i);
+      return;
+    }
+
+    // 第 2、3 列：直接变绿
+    state[i] = "d"; paint(i);
+    setInfo(TIPS[i], false); highlightTip(i);
+    updateProgress();
+  }
+
+  // 二选一按钮（未成功 / 成功）
+  document.querySelectorAll(".subbtn").forEach(sb => {
+    sb.addEventListener("click", () => {
+      const target = Number(sb.dataset.target);
+      const ok = sb.classList.contains("ok");
+      if (ok) {
+        // 成功：前面的按钮全部变绿
+        for (let k = 0; k <= target; k++) {
+          if (state[k] !== "d") { state[k] = "d"; paint(k); }
+        }
+        subsEls[target].classList.remove("show");
+        setInfo(OK_TIPS[target], false); highlightTip(target);
+        updateProgress();
+      } else {
+        // 未成功：版本号(第1列)保持绿，恢复(第6列)保持橙，其余(第2~5列)变红
+        for (let k = 1; k <= 4; k++) { state[k] = "p"; }
+        subsEls[3].classList.remove("show");
+        subsEls[4].classList.remove("show");
+        paintAll();
+        setInfo(
+          "<b>未成功</b> —— 版本号已保留绿色、恢复按钮保持待执行（橙色），前面的步骤已重置为红色，请从第 1 步「手动检查」重新排查（可先用第 6 列恢复原生再重做）。",
+          true
+        );
+        highlightTip(0);
+        toast("未成功：前序步骤已重置为红");
+      }
+    });
+  });
+
+  buttons.forEach((btn, i) => btn.addEventListener("click", () => clickBtn(i)));
+
+  document.getElementById("reset").addEventListener("click", () => {
+    state = ["p","p","p","p","p","p"];
+    supportVersion = null;
+    paintAll();
+    subsEls[3].classList.remove("show");
+    subsEls[4].classList.remove("show");
+    setInfo("点击「手动检查」—— 将自动到 GitHub 检索 AirBeep 当前支持的 iOS 版本区间。", false);
+    highlightTip(-1);
+    updateProgress();
+  });
+
+  paintAll();
+  updateProgress();
+
+  // ===== 选项卡：Mac / Win 部署方案 =====
+  document.querySelectorAll(".tab").forEach(tab => {
+    tab.addEventListener("click", () => {
+      document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+      tab.classList.add("active");
+      const which = tab.dataset.tab;
+      document.getElementById("panel-mac").classList.toggle("hidden", which !== "mac");
+      document.getElementById("panel-win").classList.toggle("hidden", which !== "win");
+    });
+  });
+
+  // 下载部署脚本
+  function downloadScript(id, filename) {
+    const txt = document.getElementById(id).innerText;
+    const blob = new Blob([txt], { type: "text/plain;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url; a.download = filename;
+    document.body.appendChild(a); a.click();
+    document.body.removeChild(a); URL.revokeObjectURL(url);
+  }
+  document.getElementById("dl-mac").addEventListener("click", () => downloadScript("code-mac", "deploy-airbeep-mac.sh"));
+  document.getElementById("dl-win").addEventListener("click", () => downloadScript("code-win", "deploy-airbeep-win.ps1"));
+</script>
+</body>
+</html>
