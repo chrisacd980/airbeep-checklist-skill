@@ -69,7 +69,7 @@
   .dlbtn { display:inline-block; font-size:12px; color:#fff; background:var(--accent); border:none; border-radius:6px; padding:7px 14px; cursor:pointer; margin-top:4px; }
   .dlbtn:hover { filter:brightness(1.05); }
   .note { font-size:12px; color:#b9770e; background:#fff6e9; border:1px solid #f0d9b0; border-radius:8px; padding:8px 12px; margin-top:10px; line-height:1.6; }
-  .grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px; }
+  .grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; }
   .label {
     text-align: center; font-size: 13px; font-weight: 600;
     padding: 10px 4px; background: #eef2f7; border-radius: 8px;
@@ -159,6 +159,13 @@
   .btn-cancel:hover { filter:brightness(.96); }
   .btn-ok { background:#e8590c; color:#fff; font-weight:700; }
   .btn-ok:hover { filter:brightness(1.05); }
+  /* 致谢弹窗（信息样式，区别于警示弹窗） */
+  .modal-box.info { border-color: var(--accent); }
+  .modal-box.info h3 { color: var(--accent); }
+  .modal-box.info .modal-icon { color: var(--accent); }
+  /* 小科普里的粗体红字提醒 */
+  .tips li.devwarn-red { background:#fdecea; border-left-color:#e74c3c; color:#c0392b; font-weight:700; }
+  .tips li.devwarn-red .step { color:#c0392b; }
 </style>
 </head>
 <body>
@@ -215,7 +222,8 @@ winget install AppleiTunes</span></div>
       <div class="label" id="l2"></div>
       <div class="label" id="l3"></div>
       <div class="label" id="l4"></div>
-      <div class="label independent" id="l5"></div>
+      <div class="label" id="l5"></div>
+      <div class="label independent" id="l6"></div>
 
       <div class="cell">
         <button class="btn" id="btn0" data-id="0"></button>
@@ -241,7 +249,10 @@ winget install AppleiTunes</span></div>
         </div>
       </div>
       <div class="cell">
-        <button class="btn independent" id="btn5" data-id="5"></button>
+        <button class="btn" id="btn5" data-id="5"></button>
+      </div>
+      <div class="cell">
+        <button class="btn independent" id="btn6" data-id="6"></button>
       </div>
     </div>
 
@@ -270,16 +281,16 @@ winget install AppleiTunes</span></div>
   const I18N = {
     zh: {
       title: "AirBeep 静音功能 · 操作检查卡",
-      sub: "按顺序从左到右完成前 5 步；第 6 列「恢复原生方案」可独立随时执行。",
+      sub: "按顺序从左到右完成前 6 步；第 7 列「恢复原生方案」可独立随时执行。",
       warn: "⚠️ <b>特别提示：</b>请务必<b>关闭 iPhone 系统自动升级</b>（设置 › 通用 › 软件更新 › 自动更新，全部关掉）。一旦自动升级，可能导致 AirBeep 静音功能<b>失效</b>；在官方更新适配指令前，将<b>无法再次开启</b>！",
       tabmac: "Mac（M 芯片）", tabwin: "Win 系统",
       ptitleMac: "Mac（M 芯片）部署脚本", ptitleWin: "Win 系统部署脚本",
       dlMac: "⬇️ 下载 Mac 部署脚本（.sh）", dlWin: "⬇️ 下载 Win 部署脚本（.ps1）",
-      noteMac: "部署完成后，按本页下方「操作检查卡」逐步执行：手动检查 → 开发者模式 → 执行 AirBeep → 通话测试 → 重启后测试 → 恢复原生。",
+      noteMac: "部署完成后，按本页下方「操作检查卡」逐步执行：手动检查 → 开发者模式 → 执行 AirBeep → 通话测试 → 重启后测试 → 关闭开发者模式 → 恢复原生。",
       noteWin: "Windows 路线用 <code>source-patched/</code> 下的脚本（不要用 macos-port）。部署完成后，按本页下方「操作检查卡」逐步执行。",
-      labels: ["ios支持版本", "开发者模式", "执行AirBeep", "自行通话测试", "重启后测试", "恢复原生方案"],
-      init: ["手动检查", "未开启", "待执行", "待测试", "待测试", "待恢复"],
-      final: [null, "已开启并连接电脑", "已执行", "通话测试", "重启测试", "已恢复"],
+      labels: ["ios支持版本", "开发者模式", "执行AirBeep", "自行通话测试", "重启后测试", "关闭开发者模式", "恢复原生方案"],
+      init: ["手动检查", "未开启", "待执行", "待测试", "待测试", "未关闭", "待恢复"],
+      final: [null, "已开启并连接电脑", "已执行", "通话测试", "重启测试", "已关闭", "已恢复"],
       checking: "检索中…",
       subFail: "未成功", subOk: "成功",
       infoDefault: "点击「手动检查」—— 将自动到 GitHub 检索 AirBeep 当前支持的 iOS 版本区间。",
@@ -289,13 +300,14 @@ winget install AppleiTunes</span></div>
         2: "AirBeep 已执行静音替换并读回校验通过，原件备份已自动留存。✅ 下一步：自行通话测试。",
         3: "请拨打一通电话实测：起止提示音静音了吗？<b>成功</b>或<b>未成功</b>二选一。",
         4: "请重启手机后再打一通电话：静音还有效吗？<b>成功</b>或<b>未成功</b>二选一。",
-        5: "已从备份恢复原生方案，系统原始提示音已恢复。"
+        5: "开发者模式已关闭，整套流程收尾。🔆 如需随时复原原始提示音，可用第 7 列「恢复原生方案」。",
+        6: "已从备份恢复原生方案，系统原始提示音已恢复。"
       },
       ok: {
         3: "已选择 <b>成功</b> —— 通话测试通过，前面的步骤全部确认有效。✅ 下一步：重启后测试。",
         4: "已选择 <b>成功</b> —— 重启后静音仍生效，整个流程全部完成！🎉"
       },
-      fail: "<b>未成功</b> —— 版本号已保留绿色、恢复按钮保持待执行（橙色），前面的步骤已重置为红色，请从第 1 步「手动检查」重新排查（可先用第 6 列恢复原生再重做）。",
+      fail: "<b>未成功</b> —— 版本号已保留绿色、恢复按钮保持待执行（橙色），前面的步骤已重置为红色，请从第 1 步「手动检查」重新排查（可先用第 7 列恢复原生再重做）。",
       toastFail: "未成功：前序步骤已重置为红",
       toastOrder: (i) => `请先完成第 ${i} 步（当前按钮的前一步尚未变绿）`,
       tipsTitle: "📖 小科普 · 每一步在做什么",
@@ -305,28 +317,33 @@ winget install AppleiTunes</span></div>
         '<span class="step">执行AirBeep：</span>打开 AirBeep 拨动开关即把录音提示音换成等长静音，操作中别退出 app，替换完会自动留存原件备份。',
         '<span class="step">自行通话测试：</span>拨一通电话并开启录音，听听起止提示音是否已经消失（静音成功）。',
         '<span class="step">重启后测试：</span>重启手机后再打一通电话，确认静音在重启后没有失效。',
-        '<span class="step">恢复原生方案：</span>在 AirBeep 里点「恢复」，即可从自动备份一键还原系统原始提示音，随时可逆。'
+        '<span class="step">恢复原生方案：</span>在 AirBeep 里点「恢复」，即可从自动备份一键还原系统原始提示音，随时可逆。',
+        '<span class="step">关闭开发者模式：</span>整套流程跑通、确认静音有效后，回到「设置 → 隐私与安全性 → 开发者模式」把它关掉，日常使用更省心。'
       ],
-      progress: (n) => `进度：${n} / 5（第 6 列独立）`,
+      devWarn: "成功后请自行在手机端关闭开发者模式，避免手机异常发热。",
+      progress: (n) => `进度：${n} / 6（第 7 列独立）`,
       reset: "重置",
       confirmTitle: "⚠️ 隐私与法律提示",
-      confirmBody: "该命令仅适用于测试，如果您有真实通话录音需求，请在征得通话对方同意后再执行，以便保护双方隐私，避免法律纠纷。",
+      confirmBody: "该命令仅适用于测试手机通话质量，如果您有真实通话录音需求，请在征得通话对方同意后再执行，以便保护双方隐私，避免法律纠纷。",
       confirmOk: "我已知晓，确认执行",
       confirmCancel: "取消",
-      confirmDone: "✅ 已确认授权执行 AirBeep。请返回 WorkBuddy 对话，告诉助手「执行」，由其在终端运行 airlift.py 完成真机静音替换（含自动备份原件）。"
+      confirmDone: "✅ 已确认授权执行 AirBeep。请返回 WorkBuddy 对话，告诉助手「执行」，由其在终端运行 airlift.py 完成真机静音替换（含自动备份原件）。",
+      creditTitle: "💡 致谢",
+      creditBody: "感谢 AirBeep 开发团队开源，本人只是在原作者成果上添加卡片式操作外壳。",
+      creditOk: "知道了"
     },
     en: {
       title: "AirBeep Silence Tool · Operation Checklist",
-      sub: "Complete the first 5 steps from left to right in order; column 6 \u201cRestore Original\u201d works independently at any time.",
+      sub: "Complete the first 6 steps from left to right in order; column 7 \u201cRestore Original\u201d works independently at any time.",
       warn: "⚠️ <b>Important:</b> Make sure <b>iPhone automatic updates are OFF</b> (Settings › General › Software Update › Automatic Updates — turn everything off). If the system auto-updates, AirBeep may <b>stop working</b>, and it <b>cannot be re-enabled</b> until the author ships an updated bypass!",
       tabmac: "Mac (M-series)", tabwin: "Windows",
       ptitleMac: "Mac (M-series) deploy script", ptitleWin: "Windows deploy script",
       dlMac: "⬇️ Download Mac deploy script (.sh)", dlWin: "⬇️ Download Win deploy script (.ps1)",
-      noteMac: "After deployment, follow the Operation Checklist at the bottom of this page: Check → Developer Mode → Run AirBeep → Call Test → Reboot Test → Restore Original.",
+      noteMac: "After deployment, follow the Operation Checklist at the bottom of this page: Check → Developer Mode → Run AirBeep → Call Test → Reboot Test → Turn off Dev Mode → Restore Original.",
       noteWin: "The Windows route uses scripts under <code>source-patched/</code> (not macos-port). After deployment, follow the Operation Checklist at the bottom of this page.",
-      labels: ["iOS Support", "Developer Mode", "Run AirBeep", "Call Test", "Reboot Test", "Restore Original"],
-      init: ["Check", "Off", "To run", "To test", "To test", "To restore"],
-      final: [null, "Enabled & connected", "Executed", "Call test", "Reboot test", "Restored"],
+      labels: ["iOS Support", "Developer Mode", "Run AirBeep", "Call Test", "Reboot Test", "Dev Mode Off", "Restore Original"],
+      init: ["Check", "Off", "To run", "To test", "To test", "Not off", "To restore"],
+      final: [null, "Enabled & connected", "Executed", "Call test", "Reboot test", "Turned off", "Restored"],
       checking: "Checking…",
       subFail: "Fail", subOk: "Success",
       infoDefault: "Click \u201cCheck\u201d — it will fetch the iOS range AirBeep currently supports from the GitHub README.",
@@ -336,13 +353,14 @@ winget install AppleiTunes</span></div>
         2: "AirBeep executed: tones replaced and verified by read-back; the original backup is saved automatically. ✅ Next: call test.",
         3: "Make a real call and test: are the start/stop tones silent? Choose <b>Success</b> or <b>Fail</b>.",
         4: "Reboot the phone and call again: does silence still work? Choose <b>Success</b> or <b>Fail</b>.",
-        5: "Original tones restored from backup."
+        5: "Developer Mode turned off — the whole flow is wrapped up. 🔆 To bring back the original tones anytime, use column 7 \u201cRestore Original\u201d.",
+        6: "Original tones restored from backup."
       },
       ok: {
         3: "Success — call test passed, all previous steps confirmed. ✅ Next: reboot test.",
         4: "Success — silence still works after reboot. All done! 🎉"
       },
-      fail: "<b>Failed</b> — version kept green, restore button stays pending (orange); previous steps have been reset to red. Re-check from step 1 (you can use column 6 to restore the original first).",
+      fail: "<b>Failed</b> — version kept green, restore button stays pending (orange); previous steps have been reset to red. Re-check from step 1 (you can use column 7 to restore the original first).",
       toastFail: "Failed: previous steps reset to red",
       toastOrder: (i) => `Finish step ${i} first (the previous step isn't green yet)`,
       tipsTitle: "📖 Tips · What each step does",
@@ -352,32 +370,38 @@ winget install AppleiTunes</span></div>
         '<span class="step">Run AirBeep:</span> Flip the switch to swap tones for equal-length silence; don\u2019t leave the app mid-operation; originals are backed up automatically.',
         '<span class="step">Call test:</span> Make a call with recording on and listen whether the start/stop tones are gone.',
         '<span class="step">Reboot test:</span> Reboot and call again to confirm silence still works.',
-        '<span class="step">Restore original:</span> Tap \u201cRestore\u201d in AirBeep to bring back the original system tones from the automatic backup — fully reversible.'
+        '<span class="step">Restore original:</span> Tap \u201cRestore\u201d in AirBeep to bring back the original system tones from the automatic backup — fully reversible.',
+        '<span class="step">Turn off Dev Mode:</span> Once everything works and silence is confirmed, go back to Settings → Privacy & Security → Developer Mode and turn it off for daily use.'
       ],
-      progress: (n) => `Progress: ${n} / 5 (column 6 is independent)`,
+      devWarn: "After success, please turn Developer Mode off on the phone to avoid abnormal heating.",
+      progress: (n) => `Progress: ${n} / 6 (column 7 is independent)`,
       reset: "Reset",
       confirmTitle: "⚠️ Privacy & Legal Notice",
-      confirmBody: "This command is for testing purposes only. If you need to record a real call, please obtain the other party's consent before proceeding, so as to protect both parties' privacy and avoid legal disputes.",
+      confirmBody: "This command is for testing phone call quality only. If you need to record a real call, please obtain the other party's consent before proceeding, so as to protect both parties' privacy and avoid legal disputes.",
       confirmOk: "I Understand, Proceed",
       confirmCancel: "Cancel",
-      confirmDone: "✅ Authorization confirmed. Please return to the WorkBuddy chat and tell the assistant to 'execute' — they will run airlift.py on the terminal to perform the real device tone replacement (with automatic original backup)."
+      confirmDone: "✅ Authorization confirmed. Please return to the WorkBuddy chat and tell the assistant to 'execute' — they will run airlift.py on the terminal to perform the real device tone replacement (with automatic original backup).",
+      creditTitle: "💡 Credits",
+      creditBody: "Thanks to the AirBeep development team for open-sourcing; I only added a card-style operation shell on top of the original author's work.",
+      creditOk: "Got it"
     }
   };
 
   let lang = "zh";
   let L = I18N.zh;
 
-  const buttons = [0,1,2,3,4,5].map(i => document.getElementById("btn" + i));
+  const buttons = [0,1,2,3,4,5,6].map(i => document.getElementById("btn" + i));
   const subsEls = { 3: document.getElementById("subs3"), 4: document.getElementById("subs4") };
   const infoEl = document.getElementById("info");
   const progressEl = document.getElementById("progress");
   const toastEl = document.getElementById("toast");
 
   // 状态：p=红(待) a=await(已点、等二选一) d=green(完成)
-  let state = ["p","p","p","p","p","p"];
+  let state = ["p","p","p","p","p","p","p"];
   let supportVersion = null;
   let curInfo = { key: "default", args: {} };
   let curTip = -1;
+  let creditAck = false;
 
   let toastTimer = null;
   function toast(msg) {
@@ -399,10 +423,10 @@ winget install AppleiTunes</span></div>
     }
   }
 
-  function paintAll() { for (let i = 0; i < 6; i++) paint(i); }
+  function paintAll() { for (let i = 0; i < 7; i++) paint(i); }
 
   function resolvedCount() {
-    return state.slice(0,5).filter(s => s === "d").length;
+    return state.slice(0,6).filter(s => s === "d").length;
   }
 
   function updateProgress() {
@@ -432,7 +456,7 @@ winget install AppleiTunes</span></div>
 
   function highlightTip(i) {
     curTip = i;
-    for (let k = 0; k < 6; k++) {
+    for (let k = 0; k < 7; k++) {
       const li = document.getElementById("tip" + k);
       if (li) li.classList.toggle("active", k === i);
     }
@@ -440,7 +464,10 @@ winget install AppleiTunes</span></div>
 
   function buildTips() {
     const ul = document.getElementById("tipslist");
-    ul.innerHTML = L.tips.map((t, i) => `<li id="tip${i}">${t}</li>`).join("");
+    const items = L.tips.map((t, i) => `<li id="tip${i}">${t}</li>`);
+    // 在「开发者模式」说明之后插入粗体红字提醒
+    items.splice(2, 0, `<li class="devwarn-red" id="devwarn">${L.devWarn}</li>`);
+    ul.innerHTML = items.join("");
     highlightTip(curTip);
   }
 
@@ -463,18 +490,18 @@ winget install AppleiTunes</span></div>
     return v;
   }
 
-  async function clickBtn(i) {
-    // 第 6 列：独立执行
-    if (i === 5) {
-      if (state[5] === "d") return;
-      state[5] = "d"; paint(5);
-      // 恢复原生方案：版本号(第1列)与已恢复保持绿，第2~5列全部变红
+  async function doClick(i) {
+    // 第 7 列：独立执行
+    if (i === 6) {
+      if (state[6] === "d") return;
+      state[6] = "d"; paint(6);
+      // 恢复原生方案：版本号(第1列)与已恢复保持绿，第2~6列全部变红
       if (state[0] !== "d") { state[0] = "d"; } // 版本号强制变绿
-      for (let k = 1; k <= 4; k++) { state[k] = "p"; }
+      for (let k = 1; k <= 5; k++) { state[k] = "p"; }
       subsEls[3].classList.remove("show");
       subsEls[4].classList.remove("show");
       paintAll();
-      showInfo("5"); highlightTip(5);
+      showInfo("6"); highlightTip(6);
       return;
     }
 
@@ -526,6 +553,22 @@ winget install AppleiTunes</span></div>
     updateProgress();
   }
 
+  // 所有点按最前面：首次点按先弹致谢弹窗，确认后再执行原逻辑
+  function clickBtn(i) {
+    if (!creditAck) { showCredit(() => doClick(i)); return; }
+    doClick(i);
+  }
+
+  // 致谢弹窗（信息样式）
+  function showCredit(onOk) {
+    const m = document.getElementById("creditModal");
+    document.getElementById("cr-title").textContent = L.creditTitle;
+    document.getElementById("cr-body").textContent = L.creditBody;
+    document.getElementById("cr-ok").textContent = L.creditOk;
+    m.classList.add("show");
+    document.getElementById("cr-ok").onclick = () => { m.classList.remove("show"); creditAck = true; onOk(); };
+  }
+
   // 第 3 列执行前的隐私/法律确认弹窗
   function showExecConfirm(onOk) {
     const m = document.getElementById("execConfirm");
@@ -554,8 +597,8 @@ winget install AppleiTunes</span></div>
         showInfo("ok" + target); highlightTip(target);
         updateProgress();
       } else {
-        // 未成功：版本号(第1列)保持绿，恢复(第6列)保持橙，其余(第2~5列)变红
-        for (let k = 1; k <= 4; k++) { state[k] = "p"; }
+        // 未成功：版本号(第1列)保持绿，恢复(第7列)保持橙，其余(第2~6列)变红
+        for (let k = 1; k <= 5; k++) { state[k] = "p"; }
         subsEls[3].classList.remove("show");
         subsEls[4].classList.remove("show");
         paintAll();
@@ -569,7 +612,7 @@ winget install AppleiTunes</span></div>
   buttons.forEach((btn, i) => btn.addEventListener("click", () => clickBtn(i)));
 
   document.getElementById("reset").addEventListener("click", () => {
-    state = ["p","p","p","p","p","p"];
+    state = ["p","p","p","p","p","p","p"];
     supportVersion = null;
     paintAll();
     subsEls[3].classList.remove("show");
@@ -605,7 +648,7 @@ winget install AppleiTunes</span></div>
     document.getElementById("dl-win").textContent = L.dlWin;
     document.getElementById("t-note-mac").innerHTML = L.noteMac;
     document.getElementById("t-note-win").innerHTML = L.noteWin;
-    for (let i = 0; i < 6; i++) document.getElementById("l" + i).textContent = L.labels[i];
+    for (let i = 0; i < 7; i++) document.getElementById("l" + i).textContent = L.labels[i];
     document.querySelectorAll(".subbtn.fail").forEach(b => b.textContent = L.subFail);
     document.querySelectorAll(".subbtn.ok").forEach(b => b.textContent = L.subOk);
     document.getElementById("t-tips-title").textContent = L.tipsTitle;
@@ -616,6 +659,11 @@ winget install AppleiTunes</span></div>
       document.getElementById("ec-body").textContent = L.confirmBody;
       document.getElementById("ec-ok").textContent = L.confirmOk;
       document.getElementById("ec-cancel").textContent = L.confirmCancel;
+    }
+    if (document.getElementById("creditModal") && document.getElementById("creditModal").classList.contains("show")) {
+      document.getElementById("cr-title").textContent = L.creditTitle;
+      document.getElementById("cr-body").textContent = L.creditBody;
+      document.getElementById("cr-ok").textContent = L.creditOk;
     }
     paintAll();
     updateProgress();
@@ -655,6 +703,14 @@ winget install AppleiTunes</span></div>
         <button id="ec-cancel" class="btn-cancel"></button>
         <button id="ec-ok" class="btn-ok"></button>
       </div>
+    </div>
+  <!-- 致谢弹窗（所有点按前首次出现） -->
+  <div id="creditModal" class="modal-overlay">
+    <div class="modal-box info">
+      <div class="modal-icon">💡</div>
+      <h3 id="cr-title"></h3>
+      <p id="cr-body"></p>
+      <div class="modal-btns"><button id="cr-ok" class="btn-ok"></button></div>
     </div>
   </div>
 </body>
