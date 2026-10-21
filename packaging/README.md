@@ -3,9 +3,9 @@
 产物发布在 GitHub Releases：https://github.com/chrisacd980/airbeep-checklist-skill/releases
 
 ## macOS（AirBeep-macOS.dmg）
-1. `osacompile -o "AirBeep 操作台.app" build-app.applescript`
-2. 把最新 `airbeep-checklist.html` 拷入 `AirBeep 操作台.app/Contents/Resources/`
-3. 暂存目录放 app + 使用说明.txt，`hdiutil create -volname "AirBeep 操作台" -srcfolder <staging> -fs HFS+ -format UDZO AirBeep-macOS.dmg`
+1. `osacompile -o "AirBeep测试.app" build-app.applescript`
+2. 把最新 `airbeep-checklist.html` 拷入 `AirBeep测试.app/Contents/Resources/`
+3. 暂存目录放 app + 使用说明.txt，`hdiutil create -volname "AirBeep测试" -srcfolder <staging> -fs HFS+ -format UDZO AirBeep-macOS.dmg`
 
 ## Windows（AirBeep-Setup.exe）
 1. 打包载荷目录：技能全部文件 + `setup.bat` + `open-card.bat` + `create-shortcuts.ps1`（文件名全 ASCII）
