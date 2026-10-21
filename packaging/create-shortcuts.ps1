@@ -1,19 +1,17 @@
-﻿# AirBeep 检查卡 - 创建快捷方式（桌面 + 开始菜单）
+﻿# AirBeep测试 - 创建快捷方式（桌面 + 开始菜单）/ create Desktop + Start Menu shortcuts
+param([string]$CardPath = (Join-Path $PSScriptRoot "airbeep-checklist.html"))
 $ErrorActionPreference = "SilentlyContinue"
-$card = Join-Path $PSScriptRoot "airbeep-checklist.html"
 $WshShell = New-Object -ComObject WScript.Shell
-
-# 桌面快捷方式
-$lnk = $WshShell.CreateShortcut("$env:USERPROFILE\Desktop\AirBeep 检查卡.lnk")
-$lnk.TargetPath = $card
-$lnk.WorkingDirectory = $PSScriptRoot
-$lnk.Description = "AirBeep 通话免提示音 · 操作检查卡（点击在浏览器打开）"
+$name = "AirBeep测试"
+$desc = "AirBeep 通话免提示音 · 操作检查卡（点击在浏览器打开）"
+# 桌面快捷方式 / Desktop
+$lnk = $WshShell.CreateShortcut("$env:USERPROFILE\Desktop\$name.lnk")
+$lnk.TargetPath = $CardPath
+$lnk.Description = $desc
 $lnk.Save()
-
-# 开始菜单快捷方式
-$sm = "$env:APPDATA\Microsoft\Windows\Start Menu\Programs\AirBeep 检查卡.lnk"
+# 开始菜单快捷方式 / Start Menu
+$sm = "$env:APPDATA\Microsoft\Windows\Start Menu\Programs\$name.lnk"
 $lnk2 = $WshShell.CreateShortcut($sm)
-$lnk2.TargetPath = $card
-$lnk2.WorkingDirectory = $PSScriptRoot
-$lnk2.Description = "AirBeep 通话免提示音 · 操作检查卡（点击在浏览器打开）"
+$lnk2.TargetPath = $CardPath
+$lnk2.Description = $desc
 $lnk2.Save()

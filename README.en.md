@@ -18,7 +18,7 @@ If your local agent has a terminal, just send this line in its chat — it auto-
 curl -fsSL https://raw.githubusercontent.com/chrisacd980/airbeep-checklist-skill/main/install.sh | bash
 ```
 
-The checklist opens in your default browser automatically once installed; restart / refresh the agent to load the skill. You can also clone manually into the agent's skills directory (folder name `airbeep`):
+The checklist opens in your default browser automatically once installed, **and a system entry is created** (macOS: `~/Applications/AirBeep测试.app`; Windows: an “AirBeep测试” shortcut on the Desktop / Start Menu) — double-click it anytime to open the card. Restart / refresh the agent to load the skill. You can also clone manually into the agent's skills directory (folder name `airbeep`):
 
 ```bash
 git clone https://github.com/chrisacd980/airbeep-checklist-skill.git \
@@ -27,8 +27,8 @@ git clone https://github.com/chrisacd980/airbeep-checklist-skill.git \
 
 ### GUI installers (Releases)
 Prefer no command line? Grab them from [Releases](https://github.com/chrisacd980/airbeep-checklist-skill/releases):
-- **macOS**: `AirBeep-macOS.dmg` — double-click the app to open the checklist in your default browser;
-- **Windows**: `AirBeep-Setup.exe` — double-click to install; desktop / Start Menu shortcuts open the card.
+- **macOS**: `AirBeep-macOS.dmg` — contains “AirBeep测试.app”; double-click to open the checklist in your default browser;
+- **Windows**: `AirBeep-Setup.exe` — double-click to install; an “AirBeep测试” shortcut is created on the Desktop / Start Menu.
 
 ## Usage
 
@@ -45,6 +45,7 @@ The checklist (at the very top of the page) also includes:
 The checklist body includes:
 
 1. **Red warning banner**: keep iPhone automatic updates OFF (upgrading to iOS 27.2 final breaks the method).
+1b. **Notice block (dark, with icons)**: 🛡️ original tones are backed up before the first change; 📶 start/end tones are replaced with equal-length silence; 🌐 changing the system language force-restores the original tones; ⚠️ relies on non-public system behavior — use with caution.
 2. **Two deploy tabs** (with logos):
    - 🍎 **Mac (M-series)** → download `deploy-airbeep-mac.sh`
    - 🪟 **Windows** → download `deploy-airbeep-win.ps1`

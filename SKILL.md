@@ -71,7 +71,8 @@ airlift.py replace /var/mobile/Library/CallServices/Greetings/default/StopDisclo
 ## 交互式操作检查卡（airbeep-checklist.html）
 随技能附带的 `airbeep-checklist.html` 是可直接在浏览器打开的操作向导，包含：
 - **页面最顶端「致谢文本框」**：说明本卡片仅为原作者成果之上的卡片式操作外壳（文本框形式，不再用弹窗，避免遮挡按钮导致无法点击）。
-- 顶部红色警示牌：提醒**关闭 iPhone 自动升级**（升级到 iOS 27.2 正式版会导致方案失效）。
+- **顶部红色警示牌**：提醒**关闭 iPhone 自动升级**（升级到 iOS 27.2 正式版会导致方案失效）。
+- **「注意事项」深色框（带图标）**：🛡️ 首次修改前自动备份原始提示音；📶 起止提示音替换为等长静音；🌐 更改系统语言可强制恢复原始提示音；⚠️ 依赖非公开系统行为，请谨慎使用。
 - 两个带 Logo 部署选项卡：**Mac（M 芯片）** 与 **Win 系统**，各自提供对应系统的「下载部署脚本」按钮（`.sh` / `.ps1`）。
 - 下方 7 步操作检查卡：① 手动检查（点按后自动抓取 GitHub README 显示支持版本区间，如 `27.0 – 27.2 Beta 2`）② 开发者模式（点按后显示「已开启并连接电脑」）③ 执行 AirBeep（点按弹隐私确认框，确认后显示「已执行」——真机替换由助手在终端执行）④ 自行通话测试（通话测试，二选一：成功／未成功）⑤ 重启后测试（重启测试，二选一）⑥ 关闭开发者模式（独立提示，红→绿）⑦ 恢复原生方案（独立列，点按后显示「已恢复」——真机还原由助手执行）。前 6 步需按序点击；第 7 列随时可点，点后除版本号与「已恢复」外全部变红。
 - 打开方式：浏览器直接打开 `airbeep-checklist.html` 即可（无需服务器）。**当用户调用本技能、或首次提到 AirBeep / 消除通话录音提示音时，主动帮用户用默认浏览器打开技能目录下的 `airbeep-checklist.html`**（macOS: `open` / Windows: `start` / Linux: `xdg-open`），把用户直接带到卡片操作界面；`install.sh` 安装完成后也会自动打开卡片。
@@ -89,8 +90,8 @@ airlift.py replace /var/mobile/Library/CallServices/Greetings/default/StopDisclo
 curl -fsSL https://raw.githubusercontent.com/chrisacd980/airbeep-checklist-skill/main/install.sh | bash
 ```
 
-- 安装后重启（或刷新）智能体，说「用 airbeep 技能消除 iPhone 通话录音提示音」即可调用；安装完成后卡片会自动在默认浏览器打开。也可手动 `git clone` 本仓库到对应技能目录。
-- **图形化安装包**（适合不想用命令行的用户，见 [Releases](https://github.com/chrisacd980/airbeep-checklist-skill/releases)）：macOS 下载 `AirBeep-macOS.dmg`（双击 app 即打开检查卡）；Windows 下载 `AirBeep-Setup.exe`（双击安装，自动创建桌面 / 开始菜单快捷方式打开卡片）。
+- 安装后重启（或刷新）智能体，说「用 airbeep 技能消除 iPhone 通话录音提示音」即可调用；安装完成后**卡片会自动在默认浏览器打开，并在系统生成「AirBeep测试」入口**（macOS：`~/Applications/AirBeep测试.app`；Windows：桌面 / 开始菜单「AirBeep测试」快捷方式）——以后双击入口即可打开检查卡，无需再进智能体对话。也可手动 `git clone` 本仓库到对应技能目录。
+- **图形化安装包**（适合不想用命令行的用户，见 [Releases](https://github.com/chrisacd980/airbeep-checklist-skill/releases)）：macOS 下载 `AirBeep-macOS.dmg`（内含「AirBeep测试.app」，双击即打开检查卡）；Windows 下载 `AirBeep-Setup.exe`（双击安装，自动创建「AirBeep测试」桌面 / 开始菜单快捷方式打开卡片）。
 - 纯云端聊天机器人（如豆包网页版 / Kimi 网页版）无法执行 Shell，但仍可手动 `git clone` 本仓库、按 README 使用卡片与脚本——知识层对所有智能体通用，真机改写仅限本机智能体。
 
 ## 版本监测

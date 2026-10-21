@@ -46,6 +46,11 @@
     color: #2c3e50; margin-bottom: 16px;
   }
   .creditbox b { color: var(--accent); }
+  /* 注意事项框（深色，参考 AirBeep 官方提示样式） */
+  .noticebox { background:#1e2733; color:#e6edf3; border-radius:10px; padding:14px 16px; margin-bottom:22px; }
+  .noticebox .notice-title { font-size:13px; font-weight:700; margin-bottom:8px; color:#fff; }
+  .noticebox .nt { font-size:13px; line-height:1.7; padding:3px 0; display:flex; gap:9px; align-items:baseline; }
+  .noticebox .nt .ni { flex:none; }
   .card {
     background: var(--card);
     border: 1px solid var(--border);
@@ -193,6 +198,10 @@
 
   <div class="card">
     <div class="warnbanner" id="t-warn"></div>
+    <div class="noticebox">
+      <div class="notice-title" id="t-notice-title"></div>
+      <div id="t-notice-items"></div>
+    </div>
 
     <div class="tabs">
       <button class="tab active" data-tab="mac">
@@ -344,6 +353,13 @@ winget install AppleiTunes</span></div>
       creditBody: "感谢 AirBeep 开发团队开源，本人只是在原作者成果上添加卡片式操作外壳。",
       creditOk: "知道了",
       creditBox: "💡 <b>致谢：</b>感谢 AirBeep 开发团队开源，本操作界面仅在其原创成果之上添加了卡片式操作外壳。",
+      noticeTitle: "📋 注意事项",
+      noticeItems: [
+        "🛡️ 首次修改前会自动备份原始提示音。",
+        "📶 开始和结束提示音会被替换为等长静音。",
+        "🌐 更改系统语言即可强制恢复原始提示音。",
+        "⚠️ 此软件依赖非公开系统行为，请谨慎使用。"
+      ],
       updateTitle: "🎉 发现新版本",
       updateBody: (v, date) => `AirBeep 操作检查卡有新版本 <b>v${v}</b>（${date}），建议更新以获得最新功能与修复。`,
       updateOk: "⬆️ 立即更新（复制命令）",
@@ -404,6 +420,13 @@ winget install AppleiTunes</span></div>
       creditBody: "Thanks to the AirBeep development team for open-sourcing; I only added a card-style operation shell on top of the original author's work.",
       creditOk: "Got it",
       creditBox: "💡 <b>Credits:</b> Thanks to the AirBeep development team for open-sourcing; this operation interface only adds a card-style operation shell on top of their original work.",
+      noticeTitle: "📋 Notice",
+      noticeItems: [
+        "🛡️ Original tones are backed up automatically before the first modification.",
+        "📶 Start and end tones are replaced with equal-length silence.",
+        "🌐 Changing the system language force-restores the original tones.",
+        "⚠️ This software relies on non-public system behavior — use with caution."
+      ],
       updateTitle: "🎉 New Version Available",
       updateBody: (v, date) => `A new version of the AirBeep checklist is available: <b>v${v}</b> (${date}). Updating is recommended for the latest features and fixes.`,
       updateOk: "⬆️ Update Now (copy command)",
@@ -702,6 +725,11 @@ winget install AppleiTunes</span></div>
     document.getElementById("t-title").textContent = L.title;
     document.getElementById("t-sub").textContent = L.sub;
     document.getElementById("t-credit").innerHTML = L.creditBox;
+    document.getElementById("t-notice-title").textContent = L.noticeTitle;
+    document.getElementById("t-notice-items").innerHTML = L.noticeItems.map(t => {
+      const icon = t.match(/^(\p{Emoji}\uFE0F?|\p{Emoji_Presentation})/u);
+      return `<div class="nt"><span class="ni">${icon ? icon[0] : "•"}</span><span>${icon ? t.slice(icon[0].length) : t}</span></div>`;
+    }).join("");
     document.getElementById("t-warn").innerHTML = L.warn;
     document.getElementById("t-tabmac").textContent = L.tabmac;
     document.getElementById("t-tabwin").textContent = L.tabwin;

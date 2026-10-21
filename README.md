@@ -18,7 +18,7 @@ AirBeep 通过 macOS / Windows 端的 AirTraffic 沙盒逃逸路线，把 iOS �
 curl -fsSL https://raw.githubusercontent.com/chrisacd980/airbeep-checklist-skill/main/install.sh | bash
 ```
 
-安装后卡片会在默认浏览器自动打开；重启 / 刷新智能体后技能生效。也可以手动克隆到对应智能体的技能目录下（目录名用 `airbeep`）：
+安装后卡片会在默认浏览器自动打开，**并在系统生成「AirBeep测试」入口**（macOS：`~/Applications/AirBeep测试.app`；Windows：桌面 / 开始菜单「AirBeep测试」快捷方式），以后双击入口即可打开检查卡；重启 / 刷新智能体后技能生效。也可以手动克隆到对应智能体的技能目录下（目录名用 `airbeep`）：
 
 ```bash
 git clone https://github.com/chrisacd980/airbeep-checklist-skill.git \
@@ -27,8 +27,8 @@ git clone https://github.com/chrisacd980/airbeep-checklist-skill.git \
 
 ### 图形化安装包（Releases）
 不想用命令行？到 [Releases](https://github.com/chrisacd980/airbeep-checklist-skill/releases) 下载：
-- **macOS**：`AirBeep-macOS.dmg` —— 双击 app 即在默认浏览器打开检查卡；
-- **Windows**：`AirBeep-Setup.exe` —— 双击安装，自动创建桌面 / 开始菜单快捷方式打开卡片。
+- **macOS**：`AirBeep-macOS.dmg` —— 内含「AirBeep测试.app」，双击即在默认浏览器打开检查卡；
+- **Windows**：`AirBeep-Setup.exe` —— 双击安装，自动创建「AirBeep测试」桌面 / 开始菜单快捷方式打开卡片。
 
 ## 使用
 
@@ -45,6 +45,7 @@ open <技能目录>/airbeep-checklist.html
 检查卡主体包含：
 
 1. **红色警示牌**：提醒关闭 iPhone 自动升级（升级到 iOS 27.2 正式版会导致方案失效）。
+1b. **「注意事项」深色框（带图标）**：🛡️ 首次修改前自动备份原始提示音；📶 起止提示音替换为等长静音；🌐 更改系统语言可强制恢复原始提示音；⚠️ 依赖非公开系统行为，请谨慎使用。
 2. **两个部署选项卡**（带 Logo）：
    - 🍎 **Mac（M 芯片）** → 下载 `deploy-airbeep-mac.sh`
    - 🪟 **Win 系统** → 下载 `deploy-airbeep-win.ps1`

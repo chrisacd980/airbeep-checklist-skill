@@ -1,6 +1,6 @@
 {
-  "version": "1.0.2",
+  "version": "1.0.3",
   "date": "2026-10-21",
-  "notes_zh": "嵌入爱思助手最新版本信息（Win V9.21 / Mac V9.07）与运行主机连接步骤，检查卡开发者模式小科普内新增爱思助手官网下载跳转链接。",
-  "notes_en": "Embedded the latest i4Tools version info (Win V9.21 / Mac V9.07) and host-connection steps; added an official-site download link in the card's Developer Mode tip."
+  "notes_zh": "卡片新增「注意事项」四条（自动备份/等长静音/改语言强制恢复/非公开系统行为警示，带图标）；install.sh 安装后会在系统生成入口：macOS 编译「AirBeep测试.app」到应用程序，Windows 创建「AirBeep测试」桌面/开始菜单快捷方式。",
+  "notes_en": "Added a 4-item Notice block to the card (auto backup / equal-length silence / language change force-restore / non-public system behavior warning, with icons). install.sh now creates a system entry after install: macOS compiles AirBeep测试.app into Applications; Windows creates AirBeep测试 Desktop/Start Menu shortcuts."
 }
