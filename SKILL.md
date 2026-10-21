@@ -41,12 +41,17 @@ AirBeep 通过 **macOS 端 AirTraffic 沙盒逃逸路线**，把 iOS 系统里"�
 - 这两个静音件已针对 iPhone17,1 / iOS 27.2 beta 2 生成；**同机型同版本可直接 replace**，其他机型请先按事实 #2 重新生成。
 
 ## 爱思助手路线（无 Mac 电脑时开启开发者模式的替代方案）
-- 官网下载：https://www.i4.cn/ （helper.i4.cn 同源）。**最新版本（2026-10-21 核对官网）**：Windows **V9.21**（2026-09-28，64/32 位；老系统可用 V8 版 V8.57）、macOS **V9.07**（2026-06-09，Apple / Intel 芯片分别下载）、Linux deb/rpm V9.01.003。
-- **运行主机连接（电脑端 ↔ iPhone）**：① 按系统/芯片安装电脑端（Mac 在「关于本机」查看是 Apple 还是 Intel 芯片；Win 选 64/32 位）→ ② 安装包自带 Apple 设备驱动组件，**无需单独安装 iTunes** → ③ 数据线连接 iPhone，手机弹窗点「信任」→ ④ 电脑端识别到设备即连接成功（随后会自动往手机安装「爱思助手移动端」，也可在电脑端点「安装移动端」手动装）。
+- 官网下载页：https://www.i4.cn/pros/pc.html （Mac / Win 均有，按系统与芯片选择；电脑端自带 Apple 设备驱动组件，**无需单独安装 iTunes**）。
+- **运行主机连接（电脑端 ↔ iPhone）**：① 在官网下载页安装电脑端（Mac 在「关于本机」查看是 Apple 还是 Intel 芯片；Win 选 64/32 位）→ ② 数据线连接 iPhone，手机弹窗点「信任」→ ③ 电脑端识别到设备即连接成功（随后会自动往手机安装「爱思助手移动端」，也可在电脑端点「安装移动端」手动装）。
 - **开开发者模式路线**：爱思助手 → app 上方「工具箱」→ 虚拟定位 → 任意尝试定位 → 手机「设置 → 隐私与安全性 → 开发者模式」打开。
-- 检查卡「小科普」的开发者模式一条里已内置官网下载跳转链接（中英双语），用户没装爱思助手时可一键前往下载。
+- 检查卡「小科普」的开发者模式一条里已内置官网下载页跳转链接（中英双语），用户没装爱思助手时可一键前往。
 
-## macOS 路线核心命令（在装好 pymobiledevice3 的 venv 中运行）
+## 本地运行时（airbeep-desktop.py · 安装包自带，无需智能体）
+安装包（dmg 里的 app / Windows 安装包）不只是"打开卡片"——它自带一套**本地运行时**，让卡片可以直接在本机完成真机操作：
+- `airbeep-desktop.py`（纯 Python 标准库）：本地 HTTP 服务（127.0.0.1:8765），托管卡片并提供 `/api/status|apply|restore|verify`（转调 `airbeep.sh`）与 `/api/env`、`/api/setup`（环境检测与一键配置：克隆上游仓 + 建 venv + 装 pymobiledevice3）。
+- app / 快捷方式启动时自动拉起该服务再打开卡片；卡片顶部出现「🖥️ 本地运行时」面板（仅在本地服务模式下显示），按钮直接执行：**一键配置环境 → 设备状态 → 执行静音 → 校验 → 恢复原生**，输出实时显示。执行前有隐私法律确认。
+- 运行时所需环境：python3 + pymobiledevice3 + 上游仓（airlift.py）+ ffmpeg（macOS 用 `brew install ffmpeg`，Windows 用 `winget install Gyan.FFmpeg`）。缺项时面板会显示 ❌ 并可一键配置；python3 缺失时按提示安装（macOS: `xcode-select --install`；Windows: python.org）。
+- 直接以文件方式打开卡片（无本地服务）时面板自动隐藏，退回"由本地智能体执行"的原流程——两种模式自动适配。
 ```bash
 # 1) 设备体检（确认无 airlift-* 残留、设备可连）
 python 设备体检.py

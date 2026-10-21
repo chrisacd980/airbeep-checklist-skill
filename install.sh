@@ -56,8 +56,9 @@ case "$(uname -s)" in
       mkdir -p "$APPDIR"
       TMPAPP="$(mktemp -d)/$APP_NAME.app"
       if osacompile -o "$TMPAPP" "$TARGET/$SKILL_NAME/packaging/build-app.applescript" >/dev/null 2>&1; then
+        # 整个技能内置进 app（含 airbeep-desktop.py 本地运行时 + 静音件 + CLI）
         mkdir -p "$TMPAPP/Contents/Resources"
-        cp "$TARGET/$SKILL_NAME/airbeep-checklist.html" "$TMPAPP/Contents/Resources/"
+        cp -R "$TARGET/$SKILL_NAME/." "$TMPAPP/Contents/Resources/" 2>/dev/null || cp -R "$TARGET/$SKILL_NAME"/* "$TMPAPP/Contents/Resources/"
         rm -rf "$APPDIR/$APP_NAME.app" 2>/dev/null || true
         if cp -R "$TMPAPP" "$APPDIR/$APP_NAME.app"; then
           echo "🖥️  已在 ~/Applications 生成「$APP_NAME.app」——以后双击它即可打开检查卡"

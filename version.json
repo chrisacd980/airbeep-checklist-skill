@@ -1,6 +1,6 @@
 {
-  "version": "1.0.3",
+  "version": "1.0.4",
   "date": "2026-10-21",
-  "notes_zh": "卡片新增「注意事项」四条（自动备份/等长静音/改语言强制恢复/非公开系统行为警示，带图标）；install.sh 安装后会在系统生成入口：macOS 编译「AirBeep测试.app」到应用程序，Windows 创建「AirBeep测试」桌面/开始菜单快捷方式。",
-  "notes_en": "Added a 4-item Notice block to the card (auto backup / equal-length silence / language change force-restore / non-public system behavior warning, with icons). install.sh now creates a system entry after install: macOS compiles AirBeep测试.app into Applications; Windows creates AirBeep测试 Desktop/Start Menu shortcuts."
+  "notes_zh": "安装包内置本地运行时（airbeep-desktop.py）：卡片新增「本地运行时」面板，可一键配置环境并直接在本机执行 设备状态/静音/校验/恢复；Win 选项卡 logo 更新为新版 Windows 样式；爱思助手改为官网下载页跳转（不再写具体版本）。",
+  "notes_en": "Installers now bundle a local runtime (airbeep-desktop.py): the card gains a Local Runtime panel to set up the environment and run status/apply/verify/restore directly on this machine; Windows tab logo updated; i4Tools link now points to the official download page."
 }

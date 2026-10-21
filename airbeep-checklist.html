@@ -51,6 +51,16 @@
   .noticebox .notice-title { font-size:13px; font-weight:700; margin-bottom:8px; color:#fff; }
   .noticebox .nt { font-size:13px; line-height:1.7; padding:3px 0; display:flex; gap:9px; align-items:baseline; }
   .noticebox .nt .ni { flex:none; }
+  /* 本地运行时面板（仅 airbeep-desktop.py 本地服务模式下显示） */
+  .rtbox { background:#f3f9f4; border:1px solid #cfe9d4; border-left:4px solid var(--green); border-radius:10px; padding:14px 16px; margin-bottom:22px; }
+  .rtbox .rt-title { font-size:13px; font-weight:700; color:#1e8449; margin-bottom:6px; }
+  .rtbox .rt-env { font-size:12px; color:#55606c; line-height:1.7; margin-bottom:10px; }
+  .rtbox .rt-env b { color:#1e8449; }
+  .rtbox .rt-btns { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:10px; }
+  .rtbox .rt-btns button { background:var(--green); color:#fff; border:none; border-radius:8px; padding:8px 14px; font-size:13px; cursor:pointer; }
+  .rtbox .rt-btns button:hover { filter:brightness(1.05); }
+  .rtbox .rt-btns button.ghost { background:#eef1f5; color:#343a40; }
+  .rtbox .rt-out { background:#1e2733; color:#e6edf3; border-radius:8px; padding:10px 12px; font-family:ui-monospace,Menlo,Consolas,monospace; font-size:12px; line-height:1.6; white-space:pre-wrap; word-break:break-all; max-height:220px; overflow-y:auto; margin:0; }
   .card {
     background: var(--card);
     border: 1px solid var(--border);
@@ -203,13 +213,27 @@
       <div id="t-notice-items"></div>
     </div>
 
+    <div class="rtbox" id="rtbox" style="display:none">
+      <div class="rt-title" id="t-rt-title"></div>
+      <div class="rt-env" id="rt-env"></div>
+      <div class="rt-btns">
+        <button id="rt-setup" class="ghost"></button>
+        <button id="rt-envbtn" class="ghost"></button>
+        <button id="rt-status"></button>
+        <button id="rt-apply"></button>
+        <button id="rt-verify"></button>
+        <button id="rt-restore"></button>
+      </div>
+      <pre class="rt-out" id="rt-out"></pre>
+    </div>
+
     <div class="tabs">
       <button class="tab active" data-tab="mac">
         <svg viewBox="0 0 384 512" aria-hidden="true"><path fill="currentColor" d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"/></svg>
         <span id="t-tabmac"></span>
       </button>
       <button class="tab" data-tab="win">
-        <svg viewBox="0 0 448 512" aria-hidden="true"><path fill="#0078d4" d="M0 93.7l183.6-25.3v177.4H0V93.7zm0 324.6l183.6 25.3V214.9H0v203.4zm203.4-227.2v177.4h183.6V71.6L203.4 191.1zm0 227.2l183.6-25.3v177.4H203.4V418.3z"/></svg>
+        <svg viewBox="0 0 48 48" aria-hidden="true"><rect x="3" y="3" width="19" height="19" rx="2.5" fill="#0078d4"/><rect x="26" y="3" width="19" height="19" rx="2.5" fill="#0078d4"/><rect x="3" y="26" width="19" height="19" rx="2.5" fill="#0078d4"/><rect x="26" y="26" width="19" height="19" rx="2.5" fill="#0078d4"/></svg>
         <span id="t-tabwin"></span>
       </button>
     </div>
@@ -334,7 +358,7 @@ winget install AppleiTunes</span></div>
       tipsTitle: "📖 小科普 · 每一步在做什么",
       tips: [
         '<span class="step">ios支持版本：</span>到 GitHub 仓库看 README 的 Requirements 支持区间，确认你的系统版本在列——不在列就千万别升级系统。',
-        '<span class="step">开发者模式：</span>先连一次电脑让入口出现，再到「设置 → 隐私与安全性 → 开发者模式」打开开关 → 点「重新启动」→ 开机后点「打开」并输入锁屏密码。<br><span class="step">爱思助手路线：</span>爱思助手 → app 上方「工具箱」→ 虚拟定位 → 任意尝试定位 → 手机进入「设置 → 隐私与安全性 → 开发者模式」。<br><a class="i4link" href="https://www.i4.cn/" target="_blank" rel="noopener">⬇️ 还没装爱思助手？点此到官网下载安装（Win V9.21 / Mac V9.07，电脑端自带驱动组件）</a>',
+        '<span class="step">开发者模式：</span>先连一次电脑让入口出现，再到「设置 → 隐私与安全性 → 开发者模式」打开开关 → 点「重新启动」→ 开机后点「打开」并输入锁屏密码。<br><span class="step">爱思助手路线：</span>爱思助手 → app 上方「工具箱」→ 虚拟定位 → 任意尝试定位 → 手机进入「设置 → 隐私与安全性 → 开发者模式」。<br><a class="i4link" href="https://www.i4.cn/pros/pc.html" target="_blank" rel="noopener">⬇️ 还没装爱思助手？点此到官网下载页安装（电脑端自带驱动组件，Mac / Win 均有）</a>',
         '<span class="step">执行AirBeep：</span>打开 AirBeep 拨动开关即把录音提示音换成等长静音，操作中别退出 app，替换完会自动留存原件备份。',
         '<span class="step">自行通话测试：</span>拨一通电话并开启录音，听听起止提示音是否已经消失（静音成功）。',
         '<span class="step">重启后测试：</span>重启手机后再打一通电话，确认静音在重启后没有失效。',
@@ -360,6 +384,20 @@ winget install AppleiTunes</span></div>
         "🌐 更改系统语言即可强制恢复原始提示音。",
         "⚠️ 此软件依赖非公开系统行为，请谨慎使用。"
       ],
+      rtTitle: "🖥️ 本地运行时 · 本机直接执行（无需智能体）",
+      rtEnvIntro: (r) => `环境检测：Python <b>${r.python ? "✅" : "❌"}</b> · 依赖 pymobiledevice3 <b>${r.pymobiledevice3 ? "✅" : "❌"}</b> · 上游仓 airlift.py <b>${r.airlift ? "✅" : "❌"}</b> · ffmpeg <b>${r.ffmpeg ? "✅" : "❌"}</b>`,
+      rtEnvMissing: "有 ❌ 时点「⚙️ 一键配置环境」自动安装（需联网）；ffmpeg 需按输出提示用 brew / winget 安装。",
+      rtSetup: "⚙️ 一键配置环境",
+      rtEnvBtn: "🔍 检测环境",
+      rtStatus: "📱 设备状态",
+      rtApply: "🔇 执行静音",
+      rtVerify: "✅ 校验",
+      rtRestore: "♻️ 恢复原生",
+      rtConfirmApply: "即将在本机执行真机静音替换（含自动备份原件）。请确认：仅用于本人设备、当地法律允许、并已获通话对方知情/同意。确定执行？",
+      rtConfirmRestore: "即将在本机执行恢复原生（用真·原生件覆盖当前提示音）。确定执行？",
+      rtRunning: "⏳ 执行中，请稍候…",
+      rtDone: "✅ 完成",
+      rtFail: "❌ 失败，详见输出",
       updateTitle: "🎉 发现新版本",
       updateBody: (v, date) => `AirBeep 操作检查卡有新版本 <b>v${v}</b>（${date}），建议更新以获得最新功能与修复。`,
       updateOk: "⬆️ 立即更新（复制命令）",
@@ -401,7 +439,7 @@ winget install AppleiTunes</span></div>
       tipsTitle: "📖 Tips · What each step does",
       tips: [
         '<span class="step">iOS support:</span> Check the Requirements range in the repo README and make sure your system version is listed — never upgrade if it isn\u2019t.',
-        '<span class="step">Developer Mode:</span> Connect to a computer once so the entry appears, then Settings → Privacy & Security → Developer Mode → Restart → enter passcode.<br><span class="step">i4Tools route:</span> i4Tools → Toolbox → Virtual Location → fake any location → on the phone open Settings → Privacy & Security → Developer Mode.<br><a class="i4link" href="https://www.i4.cn/" target="_blank" rel="noopener">⬇️ Don\u2019t have i4Tools yet? Download it from the official site (Win V9.21 / Mac V9.07; the desktop app bundles its own drivers)</a>',
+        '<span class="step">Developer Mode:</span> Connect to a computer once so the entry appears, then Settings → Privacy & Security → Developer Mode → Restart → enter passcode.<br><span class="step">i4Tools route:</span> i4Tools → Toolbox → Virtual Location → fake any location → on the phone open Settings → Privacy & Security → Developer Mode.<br><a class="i4link" href="https://www.i4.cn/pros/pc.html" target="_blank" rel="noopener">⬇️ Don\u2019t have i4Tools yet? Go to the official download page (desktop app bundles its own drivers; Mac / Windows)</a>',
         '<span class="step">Run AirBeep:</span> Flip the switch to swap tones for equal-length silence; don\u2019t leave the app mid-operation; originals are backed up automatically.',
         '<span class="step">Call test:</span> Make a call with recording on and listen whether the start/stop tones are gone.',
         '<span class="step">Reboot test:</span> Reboot and call again to confirm silence still works.',
@@ -427,6 +465,20 @@ winget install AppleiTunes</span></div>
         "🌐 Changing the system language force-restores the original tones.",
         "⚠️ This software relies on non-public system behavior — use with caution."
       ],
+      rtTitle: "🖥️ Local Runtime · run on this machine (no agent needed)",
+      rtEnvIntro: (r) => `Environment: Python <b>${r.python ? "✅" : "❌"}</b> · pymobiledevice3 <b>${r.pymobiledevice3 ? "✅" : "❌"}</b> · upstream airlift.py <b>${r.airlift ? "✅" : "❌"}</b> · ffmpeg <b>${r.ffmpeg ? "✅" : "❌"}</b>`,
+      rtEnvMissing: "If anything shows ❌, click “⚙️ One-click setup” to install automatically (needs internet); ffmpeg follows the brew / winget hint in the output.",
+      rtSetup: "⚙️ One-click setup",
+      rtEnvBtn: "🔍 Check environment",
+      rtStatus: "📱 Device status",
+      rtApply: "🔇 Apply silence",
+      rtVerify: "✅ Verify",
+      rtRestore: "♻️ Restore original",
+      rtConfirmApply: "About to perform the real-device tone replacement on this machine (originals backed up automatically). Confirm: your own device only, legal in your jurisdiction, and the other party's consent obtained. Proceed?",
+      rtConfirmRestore: "About to restore the original tones on this machine (overwriting with the true native files). Proceed?",
+      rtRunning: "⏳ Running, please wait…",
+      rtDone: "✅ Done",
+      rtFail: "❌ Failed — see output",
       updateTitle: "🎉 New Version Available",
       updateBody: (v, date) => `A new version of the AirBeep checklist is available: <b>v${v}</b> (${date}). Updating is recommended for the latest features and fixes.`,
       updateOk: "⬆️ Update Now (copy command)",
@@ -502,7 +554,66 @@ winget install AppleiTunes</span></div>
     };
   }
 
+  // ===== 本地运行时面板（仅在 airbeep-desktop.py 本地服务模式下可用；文件直开时自动隐藏）=====
+  async function rtInit() {
+    try {
+      const r = await fetch("api/env", { cache: "no-store" });
+      if (!r.ok) throw new Error("http " + r.status);
+      rtRenderEnv(await r.json());
+      document.getElementById("rtbox").style.display = "";
+    } catch (e) { /* 文件直开 / 静态托管：无本地运行时，走原「智能体执行」流程 */ }
+  }
+  function rtRenderEnv(rep) {
+    document.getElementById("t-rt-title").textContent = L.rtTitle;
+    document.getElementById("rt-env").innerHTML = L.rtEnvIntro(rep) + "<br>" + L.rtEnvMissing;
+    document.getElementById("rt-setup").textContent = L.rtSetup;
+    document.getElementById("rt-envbtn").textContent = L.rtEnvBtn;
+    document.getElementById("rt-status").textContent = L.rtStatus;
+    document.getElementById("rt-apply").textContent = L.rtApply;
+    document.getElementById("rt-verify").textContent = L.rtVerify;
+    document.getElementById("rt-restore").textContent = L.rtRestore;
+  }
+  function rtOut(text, append) {
+    const el = document.getElementById("rt-out");
+    if (!append) el.textContent = "";
+    el.textContent += (el.textContent ? "\n" : "") + text;
+    el.scrollTop = el.scrollHeight;
+  }
+  async function rtCall(sub, confirmMsg) {
+    if (confirmMsg && !confirm(confirmMsg)) return;
+    rtOut("$ airbeep.sh " + sub + "\n" + L.rtRunning, false);
+    try {
+      const r = await fetch("api/" + sub, { method: "POST" });
+      const d = await r.json();
+      rtOut((d.ok ? L.rtDone : L.rtFail) + "\n" + (d.output || ""), true);
+      if (sub !== "apply") rtRefreshEnv();
+    } catch (e) {
+      rtOut(L.rtFail + ": " + e, true);
+    }
+  }
+  async function rtRefreshEnv() {
+    try {
+      const r = await fetch("api/env", { cache: "no-store" });
+      if (r.ok) rtRenderEnv(await r.json());
+    } catch (e) { /* 忽略 */ }
+  }
+  document.getElementById("rt-setup").addEventListener("click", async () => {
+    rtOut(L.rtRunning + (lang === "zh" ? "（克隆上游仓 + 安装依赖，可能需要几分钟）" : " (cloning upstream repo + installing deps, may take a few minutes)"), false);
+    try {
+      const r = await fetch("api/setup", { method: "POST" });
+      const d = await r.json();
+      rtOut((d.ok ? L.rtDone : L.rtFail) + "\n" + (d.output || ""), true);
+      rtRefreshEnv();
+    } catch (e) { rtOut(L.rtFail + ": " + e, true); }
+  });
+  document.getElementById("rt-envbtn").addEventListener("click", rtRefreshEnv);
+  document.getElementById("rt-status").addEventListener("click", () => rtCall("status"));
+  document.getElementById("rt-apply").addEventListener("click", () => rtCall("apply", L.rtConfirmApply));
+  document.getElementById("rt-verify").addEventListener("click", () => rtCall("verify"));
+  document.getElementById("rt-restore").addEventListener("click", () => rtCall("restore", L.rtConfirmRestore));
+
   setTimeout(checkUpdate, 900);
+  rtInit();
 
   let toastTimer = null;
   function toast(msg) {
@@ -753,6 +864,9 @@ winget install AppleiTunes</span></div>
     }
     if (document.getElementById("updateModal") && document.getElementById("updateModal").classList.contains("show") && lastUpdate) {
       renderUpdateModal();
+    }
+    if (document.getElementById("rtbox") && document.getElementById("rtbox").style.display !== "none") {
+      rtRefreshEnv();
     }
     paintAll();
     updateProgress();
