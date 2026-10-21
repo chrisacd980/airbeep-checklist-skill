@@ -1,6 +1,8 @@
 # AirBeep 操作检查卡 · WorkBuddy 技能
 
-一个用于 **iOS 通话录音提示音消除（AirBeep）** 的 WorkBuddy 技能，附带一张可直接在浏览器打开的「交互式操作检查卡」。
+> 🌍 Languages: [English](README.en.md) | 简体中文
+
+一个用于 **iOS 通话录音提示音消除（AirBeep）** 的 WorkBuddy 技能，附带一张可直接在浏览器打开的「交互式操作检查卡」（**支持中英双语切换**）。
 
 ## 这是什么
 
@@ -11,7 +13,7 @@ AirBeep 通过 macOS / Windows 端的 AirTraffic 沙盒逃逸路线，把 iOS �
 ## 安装（作为 WorkBuddy 用户级技能）
 
 ```bash
-git clone https://github.com/<你的用户名>/airbeep-checklist-skill.git \
+git clone https://github.com/ChrisCD/airbeep-checklist-skill.git \
   ~/.workbuddy/skills/airbeep
 ```
 
@@ -19,7 +21,7 @@ git clone https://github.com/<你的用户名>/airbeep-checklist-skill.git \
 
 ## 使用
 
-直接用浏览器打开技能目录里的检查卡：
+直接用浏览器打开技能目录里的检查卡（右上角可切换 中文 / EN）：
 
 ```
 open ~/.workbuddy/skills/airbeep/airbeep-checklist.html

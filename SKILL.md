@@ -1,6 +1,6 @@
 ---
 name: airbeep
-description: iOS 通话录音提示音消除（AirBeep）。当用户要在 iPhone 上消除/恢复通话录音的"开始/停止"提示音、提到 AirBeep / airlift / 静音件 / iOS 27.x 通话录音提示音，或想检查 AirBeep 对当前 iOS 版本的支持情况时，使用本技能。
+description: iOS 通话录音提示音消除（AirBeep）/ Bilingual skill (中文·English) for silencing iOS call-recording disclosure tones. 当用户要在 iPhone 上消除/恢复通话录音的"开始/停止"提示音、提到 AirBeep / airlift / 静音件 / iOS 27.x 通话录音提示音，或想检查 AirBeep 对当前 iOS 版本的支持情况时使用 / Use when the user wants to remove or restore call-recording tones or check supported iOS versions.
 ---
 
 # AirBeep — iOS 通话录音提示音消除

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>AirBeep 静音功能 · 操作检查卡</title>
+<title>AirBeep 操作检查卡 / Operation Checklist</title>
 <style>
   :root {
     --red: #e74c3c;
@@ -30,7 +30,14 @@
     padding: 32px 16px;
   }
   .wrap { max-width: 1080px; margin: 0 auto; }
+  .topbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
   h1 { font-size: 22px; margin: 0 0 4px; }
+  .langswitch { display: flex; gap: 6px; margin-bottom: 6px; }
+  .lang {
+    font-size: 12px; font-weight: 600; padding: 6px 14px; border-radius: 8px;
+    border: 1px solid var(--border); background: #fff; color: var(--muted); cursor: pointer;
+  }
+  .lang.active { background: var(--accent); color: #fff; border-color: var(--accent); }
   .sub { color: var(--muted); font-size: 13px; margin-bottom: 20px; }
   .card {
     background: var(--card);
@@ -39,6 +46,29 @@
     padding: 22px;
     box-shadow: 0 4px 18px rgba(0,0,0,0.05);
   }
+  .warnbanner {
+    background: #fdecea; border: 1px solid #f1a9a0; border-left: 4px solid #e74c3c;
+    color: #922b21; border-radius: 10px; padding: 12px 16px;
+    font-size: 13px; line-height: 1.7; margin-bottom: 18px;
+  }
+  .warnbanner b { color: #c0392b; }
+  .tabs { display: flex; gap: 8px; margin-bottom: 14px; }
+  .tab {
+    flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px;
+    font-size: 14px; font-weight: 600; color: var(--muted);
+    background: #f1f4f8; border: 1px solid var(--border); border-radius: 10px;
+    padding: 12px; cursor: pointer; transition: all .15s;
+  }
+  .tab.active { background: #fff; color: var(--text); border-color: var(--accent); box-shadow: 0 2px 8px rgba(41,128,185,.12); }
+  .tab svg { width: 18px; height: 18px; }
+  .tabpanel { border: 1px solid var(--border); border-radius: 10px; padding: 16px; margin-bottom: 18px; background: #fbfcfe; }
+  .tabpanel.hidden { display: none; }
+  .tabpanel h3 { margin: 0 0 8px; font-size: 14px; }
+  .tabpanel code { background:#eef2f7; padding:1px 5px; border-radius:4px; font-size:12px; }
+  .codeblock { position: relative; background:#1e2733; color:#e6edf3; border-radius:8px; padding:12px 14px; font-family: ui-monospace, Menlo, Consolas, monospace; font-size:12px; white-space:pre; overflow-x:auto; margin:10px 0; line-height:1.6; }
+  .dlbtn { display:inline-block; font-size:12px; color:#fff; background:var(--accent); border:none; border-radius:6px; padding:7px 14px; cursor:pointer; margin-top:4px; }
+  .dlbtn:hover { filter:brightness(1.05); }
+  .note { font-size:12px; color:#b9770e; background:#fff6e9; border:1px solid #f0d9b0; border-radius:8px; padding:8px 12px; margin-top:10px; line-height:1.6; }
   .grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px; }
   .label {
     text-align: center; font-size: 13px; font-weight: 600;
@@ -107,32 +137,6 @@
   }
   .reset:hover { background: #eef6fc; }
   .tag { display:inline-block; font-size:11px; padding:1px 7px; border-radius:10px; background:#fde8d0; color:#b9770e; margin-left:6px; vertical-align:middle; }
-  .warnbanner {
-    background: #fdecea; border: 1px solid #f1a9a0; border-left: 4px solid #e74c3c;
-    color: #922b21; border-radius: 10px; padding: 12px 16px;
-    font-size: 13px; line-height: 1.7; margin-bottom: 18px;
-  }
-  .warnbanner b { color: #c0392b; }
-  .tabs { display: flex; gap: 8px; margin-bottom: 14px; }
-  .tab {
-    flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px;
-    font-size: 14px; font-weight: 600; color: var(--muted);
-    background: #f1f4f8; border: 1px solid var(--border); border-radius: 10px;
-    padding: 12px; cursor: pointer; transition: all .15s;
-  }
-  .tab.active { background: #fff; color: var(--text); border-color: var(--accent); box-shadow: 0 2px 8px rgba(41,128,185,.12); }
-  .tab svg { width: 18px; height: 18px; }
-  .tabpanel { border: 1px solid var(--border); border-radius: 10px; padding: 16px; margin-bottom: 18px; background: #fbfcfe; }
-  .tabpanel.hidden { display: none; }
-  .tabpanel h3 { margin: 0 0 8px; font-size: 14px; }
-  .tabpanel ul { margin: 6px 0; padding-left: 18px; }
-  .tabpanel p, .tabpanel li { font-size: 12.5px; color: #55606c; line-height: 1.7; }
-  .tabpanel code { background:#eef2f7; padding:1px 5px; border-radius:4px; font-size:12px; }
-  .req { background:#eef6fc; border-radius:8px; padding:8px 12px; margin:8px 0; font-size:12px; color:#2c3e50; }
-  .codeblock { position: relative; background:#1e2733; color:#e6edf3; border-radius:8px; padding:12px 14px; font-family: ui-monospace, Menlo, Consolas, monospace; font-size:12px; white-space:pre; overflow-x:auto; margin:10px 0; line-height:1.6; }
-  .dlbtn { display:inline-block; font-size:12px; color:#fff; background:var(--accent); border:none; border-radius:6px; padding:7px 14px; cursor:pointer; margin-top:4px; }
-  .dlbtn:hover { filter:brightness(1.05); }
-  .note { font-size:12px; color:#b9770e; background:#fff6e9; border:1px solid #f0d9b0; border-radius:8px; padding:8px 12px; margin-top:10px; line-height:1.6; }
   .toast {
     position: fixed; left: 50%; bottom: 30px;
     transform: translateX(-50%) translateY(20px);
@@ -145,103 +149,100 @@
 </head>
 <body>
 <div class="wrap">
-  <h1>AirBeep 静音功能 · 操作检查卡</h1>
-  <div class="sub">按顺序从左到右完成前 5 步；第 6 列「恢复原生方案」可独立随时执行。</div>
+  <div class="topbar">
+    <h1 id="t-title"></h1>
+    <div class="langswitch">
+      <button class="lang active" data-lang="zh">中文</button>
+      <button class="lang" data-lang="en">EN</button>
+    </div>
+  </div>
+  <div class="sub" id="t-sub"></div>
 
   <div class="card">
-    <div class="warnbanner">⚠️ <b>特别提示：</b>请务必<b>关闭 iPhone 系统自动升级</b>（设置 › 通用 › 软件更新 › 自动更新，全部关掉）。一旦自动升级，可能导致 AirBeep 静音功能<b>失效</b>；在官方更新适配指令前，将<b>无法再次开启</b>！</div>
+    <div class="warnbanner" id="t-warn"></div>
 
     <div class="tabs">
       <button class="tab active" data-tab="mac">
         <svg viewBox="0 0 384 512" aria-hidden="true"><path fill="currentColor" d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"/></svg>
-        Mac（M 芯片）
+        <span id="t-tabmac"></span>
       </button>
       <button class="tab" data-tab="win">
         <svg viewBox="0 0 448 512" aria-hidden="true"><path fill="#0078d4" d="M0 93.7l183.6-25.3v177.4H0V93.7zm0 324.6l183.6 25.3V214.9H0v203.4zm203.4-227.2v177.4h183.6V71.6L203.4 191.1zm0 227.2l183.6-25.3v177.4H203.4V418.3z"/></svg>
-        Win 系统
+        <span id="t-tabwin"></span>
       </button>
     </div>
 
     <div class="tabpanel" id="panel-mac">
-      <h3>Mac（M 芯片）部署脚本</h3>
+      <h3 id="t-ptitle-mac"></h3>
       <div class="codeblock"><span id="code-mac">git clone https://github.com/jiutinglifeng/airbeep-calltone-research
 cd airbeep-calltone-research
 python3 -m venv .venv &amp;&amp; source .venv/bin/activate
 pip install "pymobiledevice3==11.26.1"
 brew install ffmpeg</span></div>
-      <button class="dlbtn" id="dl-mac">⬇️ 下载 Mac 部署脚本（.sh）</button>
-      <div class="note">部署完成后，按本页下方「操作检查卡」逐步执行：手动检查 → 开发者模式 → 执行 AirBeep → 通话测试 → 重启后测试 → 恢复原生。</div>
+      <button class="dlbtn" id="dl-mac"></button>
+      <div class="note" id="t-note-mac"></div>
     </div>
 
     <div class="tabpanel hidden" id="panel-win">
-      <h3>Win 系统部署脚本</h3>
+      <h3 id="t-ptitle-win"></h3>
       <div class="codeblock"><span id="code-win">git clone https://github.com/jiutinglifeng/airbeep-calltone-research
 cd airbeep-calltone-research
 python -m venv .venv &amp;&amp; .venv\Scripts\activate
 pip install "pymobiledevice3==11.26.1"
 winget install ffmpeg
 winget install AppleiTunes</span></div>
-      <button class="dlbtn" id="dl-win">⬇️ 下载 Win 部署脚本（.ps1）</button>
-      <div class="note">Windows 路线用 <code>source-patched/</code> 下的脚本（不要用 macos-port）。部署完成后，按本页下方「操作检查卡」逐步执行。</div>
+      <button class="dlbtn" id="dl-win"></button>
+      <div class="note" id="t-note-win"></div>
     </div>
 
     <div class="grid">
-      <!-- 第一行：标题 -->
-      <div class="label">ios支持版本</div>
-      <div class="label">开发者模式</div>
-      <div class="label">执行AirBeep</div>
-      <div class="label">自行通话测试</div>
-      <div class="label">重启后测试</div>
-      <div class="label independent">恢复原生方案<span class="tag">独立</span></div>
+      <div class="label" id="l0"></div>
+      <div class="label" id="l1"></div>
+      <div class="label" id="l2"></div>
+      <div class="label" id="l3"></div>
+      <div class="label" id="l4"></div>
+      <div class="label independent" id="l5"></div>
 
-      <!-- 第二行：按钮 -->
       <div class="cell">
-        <button class="btn" id="btn0" data-id="0">手动检查</button>
+        <button class="btn" id="btn0" data-id="0"></button>
       </div>
       <div class="cell">
-        <button class="btn" id="btn1" data-id="1">未开启</button>
+        <button class="btn" id="btn1" data-id="1"></button>
       </div>
       <div class="cell">
-        <button class="btn" id="btn2" data-id="2">待执行</button>
+        <button class="btn" id="btn2" data-id="2"></button>
       </div>
       <div class="cell">
-        <button class="btn" id="btn3" data-id="3">待测试</button>
+        <button class="btn" id="btn3" data-id="3"></button>
         <div class="subs" id="subs3">
-          <button class="subbtn fail" data-target="3">未成功</button>
-          <button class="subbtn ok" data-target="3">成功</button>
+          <button class="subbtn fail" data-target="3"></button>
+          <button class="subbtn ok" data-target="3"></button>
         </div>
       </div>
       <div class="cell">
-        <button class="btn" id="btn4" data-id="4">待测试</button>
+        <button class="btn" id="btn4" data-id="4"></button>
         <div class="subs" id="subs4">
-          <button class="subbtn fail" data-target="4">未成功</button>
-          <button class="subbtn ok" data-target="4">成功</button>
+          <button class="subbtn fail" data-target="4"></button>
+          <button class="subbtn ok" data-target="4"></button>
         </div>
       </div>
       <div class="cell">
-        <button class="btn independent" id="btn5" data-id="5">待恢复</button>
+        <button class="btn independent" id="btn5" data-id="5"></button>
       </div>
     </div>
 
     <div class="divider"></div>
 
-    <div class="info" id="info">点击「手动检查」—— 将自动到 GitHub 检索 AirBeep 当前支持的 iOS 版本区间。</div>
+    <div class="info" id="info"></div>
 
     <div class="tips">
-      <div class="tips-title">📖 小科普 · 每一步在做什么</div>
-      <ul>
-        <li id="tip0"><span class="step">ios支持版本：</span>到 GitHub 仓库看 README 的 Requirements 支持区间，确认你的系统版本在列——不在列就千万别升级系统。</li>
-        <li id="tip1"><span class="step">开发者模式：</span>先连一次电脑让入口出现，再到「设置 → 隐私与安全性 → 开发者模式」打开开关 → 点「重新启动」→ 开机后点「打开」并输入锁屏密码。<br><span class="step">爱思助手路线：</span>爱思助手 → app 上方「工具箱」→ 虚拟定位 → 任意尝试定位 → 手机进入「设置 → 隐私与安全性 → 开发者模式」。</li>
-        <li id="tip2"><span class="step">执行AirBeep：</span>打开 AirBeep 拨动开关即把录音提示音换成等长静音，操作中别退出 app，替换完会自动留存原件备份。</li>
-        <li id="tip3"><span class="step">自行通话测试：</span>拨一通电话并开启录音，听听起止提示音是否已经消失（静音成功）。</li>
-        <li id="tip4"><span class="step">重启后测试：</span>重启手机后再打一通电话，确认静音在重启后没有失效。</li>
-        <li id="tip5"><span class="step">恢复原生方案：</span>在 AirBeep 里点「恢复」，即可从自动备份一键还原系统原始提示音，随时可逆。</li>
-      </ul>
+      <div class="tips-title" id="t-tips-title"></div>
+      <ul id="tipslist"></ul>
     </div>
 
     <div class="bar">
-      <div class="progress" id="progress">进度：0 / 5（第 6 列独立）</div>
-      <button class="reset" id="reset">重置</button>
+      <div class="progress" id="progress"></div>
+      <button class="reset" id="reset"></button>
     </div>
   </div>
 </div>
@@ -252,23 +253,95 @@ winget install AppleiTunes</span></div>
   const REPO_RAW = "https://raw.githubusercontent.com/jiutinglifeng/airbeep-calltone-research/main/README.md";
   const FALLBACK = "27.0 – 27.2 Beta 2";
 
-  // 初始文案 / 完成文案
-  const INIT_TEXT = ["手动检查", "未开启", "待执行", "待测试", "待测试", "待恢复"];
-  const FINAL_TEXT = [null, "已开启并连接电脑", "已执行", "通话测试", "重启测试", "已恢复"];
-
-  const TIPS = [
-    null, // 第 1 步动态生成
-    "开发者模式已开启，设备可连接电脑侧载运行 AirBeep。✅ 下一步：执行 AirBeep。",
-    "AirBeep 已执行静音替换并读回校验通过，原件备份已自动留存。✅ 下一步：自行通话测试。",
-    "请拨打一通电话实测：起止提示音静音了吗？<b>成功</b>或<b>未成功</b>二选一。",
-    "请重启手机后再打一通电话：静音还有效吗？<b>成功</b>或<b>未成功</b>二选一。",
-    "已从备份恢复原生方案，系统原始提示音已恢复。"
-  ];
-
-  const OK_TIPS = {
-    3: "已选择 <b>成功</b> —— 通话测试通过，前面的步骤全部确认有效。✅ 下一步：重启后测试。",
-    4: "已选择 <b>成功</b> —— 重启后静音仍生效，整个流程全部完成！🎉"
+  const I18N = {
+    zh: {
+      title: "AirBeep 静音功能 · 操作检查卡",
+      sub: "按顺序从左到右完成前 5 步；第 6 列「恢复原生方案」可独立随时执行。",
+      warn: "⚠️ <b>特别提示：</b>请务必<b>关闭 iPhone 系统自动升级</b>（设置 › 通用 › 软件更新 › 自动更新，全部关掉）。一旦自动升级，可能导致 AirBeep 静音功能<b>失效</b>；在官方更新适配指令前，将<b>无法再次开启</b>！",
+      tabmac: "Mac（M 芯片）", tabwin: "Win 系统",
+      ptitleMac: "Mac（M 芯片）部署脚本", ptitleWin: "Win 系统部署脚本",
+      dlMac: "⬇️ 下载 Mac 部署脚本（.sh）", dlWin: "⬇️ 下载 Win 部署脚本（.ps1）",
+      noteMac: "部署完成后，按本页下方「操作检查卡」逐步执行：手动检查 → 开发者模式 → 执行 AirBeep → 通话测试 → 重启后测试 → 恢复原生。",
+      noteWin: "Windows 路线用 <code>source-patched/</code> 下的脚本（不要用 macos-port）。部署完成后，按本页下方「操作检查卡」逐步执行。",
+      labels: ["ios支持版本", "开发者模式", "执行AirBeep", "自行通话测试", "重启后测试", "恢复原生方案"],
+      init: ["手动检查", "未开启", "待执行", "待测试", "待测试", "待恢复"],
+      final: [null, "已开启并连接电脑", "已执行", "通话测试", "重启测试", "已恢复"],
+      checking: "检索中…",
+      subFail: "未成功", subOk: "成功",
+      infoDefault: "点击「手动检查」—— 将自动到 GitHub 检索 AirBeep 当前支持的 iOS 版本区间。",
+      checked: (v, live) => `已检索到支持区间：<b>${v}</b>。请核对你手机的系统版本是否在此区间内——不在区间就千万别升级系统。` + (live ? "" : "<br><small>⚠️ 在线检索失败，当前显示为缓存值。</small>"),
+      step: {
+        1: "开发者模式已开启，设备可连接电脑侧载运行 AirBeep。✅ 下一步：执行 AirBeep。",
+        2: "AirBeep 已执行静音替换并读回校验通过，原件备份已自动留存。✅ 下一步：自行通话测试。",
+        3: "请拨打一通电话实测：起止提示音静音了吗？<b>成功</b>或<b>未成功</b>二选一。",
+        4: "请重启手机后再打一通电话：静音还有效吗？<b>成功</b>或<b>未成功</b>二选一。",
+        5: "已从备份恢复原生方案，系统原始提示音已恢复。"
+      },
+      ok: {
+        3: "已选择 <b>成功</b> —— 通话测试通过，前面的步骤全部确认有效。✅ 下一步：重启后测试。",
+        4: "已选择 <b>成功</b> —— 重启后静音仍生效，整个流程全部完成！🎉"
+      },
+      fail: "<b>未成功</b> —— 版本号已保留绿色、恢复按钮保持待执行（橙色），前面的步骤已重置为红色，请从第 1 步「手动检查」重新排查（可先用第 6 列恢复原生再重做）。",
+      toastFail: "未成功：前序步骤已重置为红",
+      toastOrder: (i) => `请先完成第 ${i} 步（当前按钮的前一步尚未变绿）`,
+      tipsTitle: "📖 小科普 · 每一步在做什么",
+      tips: [
+        '<span class="step">ios支持版本：</span>到 GitHub 仓库看 README 的 Requirements 支持区间，确认你的系统版本在列——不在列就千万别升级系统。',
+        '<span class="step">开发者模式：</span>先连一次电脑让入口出现，再到「设置 → 隐私与安全性 → 开发者模式」打开开关 → 点「重新启动」→ 开机后点「打开」并输入锁屏密码。<br><span class="step">爱思助手路线：</span>爱思助手 → app 上方「工具箱」→ 虚拟定位 → 任意尝试定位 → 手机进入「设置 → 隐私与安全性 → 开发者模式」。',
+        '<span class="step">执行AirBeep：</span>打开 AirBeep 拨动开关即把录音提示音换成等长静音，操作中别退出 app，替换完会自动留存原件备份。',
+        '<span class="step">自行通话测试：</span>拨一通电话并开启录音，听听起止提示音是否已经消失（静音成功）。',
+        '<span class="step">重启后测试：</span>重启手机后再打一通电话，确认静音在重启后没有失效。',
+        '<span class="step">恢复原生方案：</span>在 AirBeep 里点「恢复」，即可从自动备份一键还原系统原始提示音，随时可逆。'
+      ],
+      progress: (n) => `进度：${n} / 5（第 6 列独立）`,
+      reset: "重置"
+    },
+    en: {
+      title: "AirBeep Silence Tool · Operation Checklist",
+      sub: "Complete the first 5 steps from left to right in order; column 6 \u201cRestore Original\u201d works independently at any time.",
+      warn: "⚠️ <b>Important:</b> Make sure <b>iPhone automatic updates are OFF</b> (Settings › General › Software Update › Automatic Updates — turn everything off). If the system auto-updates, AirBeep may <b>stop working</b>, and it <b>cannot be re-enabled</b> until the author ships an updated bypass!",
+      tabmac: "Mac (M-series)", tabwin: "Windows",
+      ptitleMac: "Mac (M-series) deploy script", ptitleWin: "Windows deploy script",
+      dlMac: "⬇️ Download Mac deploy script (.sh)", dlWin: "⬇️ Download Win deploy script (.ps1)",
+      noteMac: "After deployment, follow the Operation Checklist at the bottom of this page: Check → Developer Mode → Run AirBeep → Call Test → Reboot Test → Restore Original.",
+      noteWin: "The Windows route uses scripts under <code>source-patched/</code> (not macos-port). After deployment, follow the Operation Checklist at the bottom of this page.",
+      labels: ["iOS Support", "Developer Mode", "Run AirBeep", "Call Test", "Reboot Test", "Restore Original"],
+      init: ["Check", "Off", "To run", "To test", "To test", "To restore"],
+      final: [null, "Enabled & connected", "Executed", "Call test", "Reboot test", "Restored"],
+      checking: "Checking…",
+      subFail: "Fail", subOk: "Success",
+      infoDefault: "Click \u201cCheck\u201d — it will fetch the iOS range AirBeep currently supports from the GitHub README.",
+      checked: (v, live) => `Supported range: <b>${v}</b>. Make sure your phone's system version is within this range — if not, do NOT upgrade.` + (live ? "" : "<br><small>⚠️ Online fetch failed; showing cached value.</small>"),
+      step: {
+        1: "Developer Mode is enabled; the device can now connect to a computer to sideload AirBeep. ✅ Next: run AirBeep.",
+        2: "AirBeep executed: tones replaced and verified by read-back; the original backup is saved automatically. ✅ Next: call test.",
+        3: "Make a real call and test: are the start/stop tones silent? Choose <b>Success</b> or <b>Fail</b>.",
+        4: "Reboot the phone and call again: does silence still work? Choose <b>Success</b> or <b>Fail</b>.",
+        5: "Original tones restored from backup."
+      },
+      ok: {
+        3: "Success — call test passed, all previous steps confirmed. ✅ Next: reboot test.",
+        4: "Success — silence still works after reboot. All done! 🎉"
+      },
+      fail: "<b>Failed</b> — version kept green, restore button stays pending (orange); previous steps have been reset to red. Re-check from step 1 (you can use column 6 to restore the original first).",
+      toastFail: "Failed: previous steps reset to red",
+      toastOrder: (i) => `Finish step ${i} first (the previous step isn't green yet)`,
+      tipsTitle: "📖 Tips · What each step does",
+      tips: [
+        '<span class="step">iOS support:</span> Check the Requirements range in the repo README and make sure your system version is listed — never upgrade if it isn\u2019t.',
+        '<span class="step">Developer Mode:</span> Connect to a computer once so the entry appears, then Settings → Privacy & Security → Developer Mode → Restart → enter passcode.<br><span class="step">i4Tools route:</span> i4Tools → Toolbox → Virtual Location → fake any location → on the phone open Settings → Privacy & Security → Developer Mode.',
+        '<span class="step">Run AirBeep:</span> Flip the switch to swap tones for equal-length silence; don\u2019t leave the app mid-operation; originals are backed up automatically.',
+        '<span class="step">Call test:</span> Make a call with recording on and listen whether the start/stop tones are gone.',
+        '<span class="step">Reboot test:</span> Reboot and call again to confirm silence still works.',
+        '<span class="step">Restore original:</span> Tap \u201cRestore\u201d in AirBeep to bring back the original system tones from the automatic backup — fully reversible.'
+      ],
+      progress: (n) => `Progress: ${n} / 5 (column 6 is independent)`,
+      reset: "Reset"
+    }
   };
+
+  let lang = "zh";
+  let L = I18N.zh;
 
   const buttons = [0,1,2,3,4,5].map(i => document.getElementById("btn" + i));
   const subsEls = { 3: document.getElementById("subs3"), 4: document.getElementById("subs4") };
@@ -279,6 +352,8 @@ winget install AppleiTunes</span></div>
   // 状态：p=红(待) a=await(已点、等二选一) d=green(完成)
   let state = ["p","p","p","p","p","p"];
   let supportVersion = null;
+  let curInfo = { key: "default", args: {} };
+  let curTip = -1;
 
   let toastTimer = null;
   function toast(msg) {
@@ -292,11 +367,11 @@ winget install AppleiTunes</span></div>
     const btn = buttons[i];
     btn.classList.toggle("done", state[i] === "d");
     if (state[i] === "d") {
-      btn.textContent = FINAL_TEXT[i] || supportVersion || FALLBACK;
+      btn.textContent = L.final[i] || supportVersion || FALLBACK;
     } else if (state[i] === "a") {
-      btn.textContent = FINAL_TEXT[i];
+      btn.textContent = L.final[i];
     } else {
-      btn.textContent = INIT_TEXT[i];
+      btn.textContent = L.init[i];
     }
   }
 
@@ -307,24 +382,42 @@ winget install AppleiTunes</span></div>
   }
 
   function updateProgress() {
-    progressEl.textContent = `进度：${resolvedCount()} / 5（第 6 列独立）`;
+    progressEl.textContent = L.progress(resolvedCount());
   }
 
-  function setInfo(html, warn) {
+  function setInfoEl(html, warn) {
     infoEl.innerHTML = html;
     infoEl.classList.toggle("warn", !!warn);
   }
 
-  function highlightTip(i) {
-    for (let k = 0; k < 6; k++)
-      document.getElementById("tip" + k).classList.toggle("active", k === i);
+  function showInfo(key, args) {
+    curInfo = { key, args: args || {} };
+    renderInfo();
   }
 
-  function formatVersion(raw) {
-    // 把 "27.0 – 27.2 B2" 这类写成易懂的 "27.0 – 27.2 Beta 2"
-    let v = raw.replace(/[–—]/g, " – ").replace(/\s+/g, " ").trim();
-    v = v.replace(/\bB(\d+)/gi, "Beta $1");
-    return v;
+  function renderInfo() {
+    const { key, args } = curInfo;
+    if (key === "default") return setInfoEl(L.infoDefault, false);
+    if (key === "checked") return setInfoEl(L.checked(args.version, args.live), false);
+    if (key === "fail") return setInfoEl(L.fail, true);
+    if (key === "ok3") return setInfoEl(L.ok[3], false);
+    if (key === "ok4") return setInfoEl(L.ok[4], false);
+    if (L.step[key]) return setInfoEl(L.step[key], false);
+    setInfoEl(L.infoDefault, false);
+  }
+
+  function highlightTip(i) {
+    curTip = i;
+    for (let k = 0; k < 6; k++) {
+      const li = document.getElementById("tip" + k);
+      if (li) li.classList.toggle("active", k === i);
+    }
+  }
+
+  function buildTips() {
+    const ul = document.getElementById("tipslist");
+    ul.innerHTML = L.tips.map((t, i) => `<li id="tip${i}">${t}</li>`).join("");
+    highlightTip(curTip);
   }
 
   async function fetchSupportVersion() {
@@ -340,6 +433,12 @@ winget install AppleiTunes</span></div>
     }
   }
 
+  function formatVersion(raw) {
+    let v = raw.replace(/[–—]/g, " – ").replace(/\s+/g, " ").trim();
+    v = v.replace(/\bB(\d+)/gi, "Beta $1");
+    return v;
+  }
+
   async function clickBtn(i) {
     // 第 6 列：独立执行
     if (i === 5) {
@@ -351,7 +450,7 @@ winget install AppleiTunes</span></div>
       subsEls[3].classList.remove("show");
       subsEls[4].classList.remove("show");
       paintAll();
-      setInfo(TIPS[5], false); highlightTip(5);
+      showInfo("5"); highlightTip(5);
       return;
     }
 
@@ -359,25 +458,21 @@ winget install AppleiTunes</span></div>
     if (i > 0 && state[i-1] !== "d") {
       buttons[i].classList.add("shake");
       setTimeout(() => buttons[i].classList.remove("shake"), 360);
-      toast(`请先完成第 ${i} 步（当前按钮的前一步尚未变绿）`);
+      toast(L.toastOrder(i));
       return;
     }
     if (state[i] === "d") return;
 
     if (i === 0) {
       // 手动检查：后台检索，按钮直接显示版本号
-      buttons[0].textContent = "检索中…";
+      buttons[0].textContent = L.checking;
       buttons[0].style.opacity = ".7";
       highlightTip(0);
       const { version, live } = await fetchSupportVersion();
       supportVersion = version;
       buttons[0].style.opacity = "";
       state[0] = "d"; paint(0);
-      setInfo(
-        `已检索到支持区间：<b>${version}</b>。请核对你手机的系统版本是否在此区间内——不在区间就千万别升级系统。` +
-        (live ? "" : "<br><small>⚠️ 在线检索失败，当前显示为缓存值。</small>"),
-        false
-      );
+      showInfo("checked", { version, live });
       updateProgress();
       return;
     }
@@ -385,13 +480,13 @@ winget install AppleiTunes</span></div>
     if (i === 3 || i === 4) {
       state[i] = "a"; paint(i);
       subsEls[i].classList.add("show");
-      setInfo(TIPS[i], false); highlightTip(i);
+      showInfo(String(i)); highlightTip(i);
       return;
     }
 
     // 第 2、3 列：直接变绿
     state[i] = "d"; paint(i);
-    setInfo(TIPS[i], false); highlightTip(i);
+    showInfo(String(i)); highlightTip(i);
     updateProgress();
   }
 
@@ -406,7 +501,7 @@ winget install AppleiTunes</span></div>
           if (state[k] !== "d") { state[k] = "d"; paint(k); }
         }
         subsEls[target].classList.remove("show");
-        setInfo(OK_TIPS[target], false); highlightTip(target);
+        showInfo("ok" + target); highlightTip(target);
         updateProgress();
       } else {
         // 未成功：版本号(第1列)保持绿，恢复(第6列)保持橙，其余(第2~5列)变红
@@ -414,12 +509,9 @@ winget install AppleiTunes</span></div>
         subsEls[3].classList.remove("show");
         subsEls[4].classList.remove("show");
         paintAll();
-        setInfo(
-          "<b>未成功</b> —— 版本号已保留绿色、恢复按钮保持待执行（橙色），前面的步骤已重置为红色，请从第 1 步「手动检查」重新排查（可先用第 6 列恢复原生再重做）。",
-          true
-        );
+        showInfo("fail");
         highlightTip(0);
-        toast("未成功：前序步骤已重置为红");
+        toast(L.toastFail);
       }
     });
   });
@@ -432,13 +524,10 @@ winget install AppleiTunes</span></div>
     paintAll();
     subsEls[3].classList.remove("show");
     subsEls[4].classList.remove("show");
-    setInfo("点击「手动检查」—— 将自动到 GitHub 检索 AirBeep 当前支持的 iOS 版本区间。", false);
+    showInfo("default");
     highlightTip(-1);
     updateProgress();
   });
-
-  paintAll();
-  updateProgress();
 
   // ===== 选项卡：Mac / Win 部署方案 =====
   document.querySelectorAll(".tab").forEach(tab => {
@@ -448,6 +537,40 @@ winget install AppleiTunes</span></div>
       const which = tab.dataset.tab;
       document.getElementById("panel-mac").classList.toggle("hidden", which !== "mac");
       document.getElementById("panel-win").classList.toggle("hidden", which !== "win");
+    });
+  });
+
+  // ===== 中英双语切换 =====
+  function applyLang(code) {
+    lang = code; L = I18N[lang];
+    document.documentElement.lang = lang === "zh" ? "zh-CN" : "en";
+    document.getElementById("t-title").textContent = L.title;
+    document.getElementById("t-sub").textContent = L.sub;
+    document.getElementById("t-warn").innerHTML = L.warn;
+    document.getElementById("t-tabmac").textContent = L.tabmac;
+    document.getElementById("t-tabwin").textContent = L.tabwin;
+    document.getElementById("t-ptitle-mac").textContent = L.ptitleMac;
+    document.getElementById("t-ptitle-win").textContent = L.ptitleWin;
+    document.getElementById("dl-mac").textContent = L.dlMac;
+    document.getElementById("dl-win").textContent = L.dlWin;
+    document.getElementById("t-note-mac").innerHTML = L.noteMac;
+    document.getElementById("t-note-win").innerHTML = L.noteWin;
+    for (let i = 0; i < 6; i++) document.getElementById("l" + i).textContent = L.labels[i];
+    document.querySelectorAll(".subbtn.fail").forEach(b => b.textContent = L.subFail);
+    document.querySelectorAll(".subbtn.ok").forEach(b => b.textContent = L.subOk);
+    document.getElementById("t-tips-title").textContent = L.tipsTitle;
+    buildTips();
+    document.getElementById("reset").textContent = L.reset;
+    paintAll();
+    updateProgress();
+    renderInfo();
+  }
+
+  document.querySelectorAll(".lang").forEach(btn => {
+    btn.addEventListener("click", () => {
+      document.querySelectorAll(".lang").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      applyLang(btn.dataset.lang);
     });
   });
 
@@ -463,6 +586,8 @@ winget install AppleiTunes</span></div>
   }
   document.getElementById("dl-mac").addEventListener("click", () => downloadScript("code-mac", "deploy-airbeep-mac.sh"));
   document.getElementById("dl-win").addEventListener("click", () => downloadScript("code-win", "deploy-airbeep-win.ps1"));
+
+  applyLang("zh");
 </script>
 </body>
 </html>
