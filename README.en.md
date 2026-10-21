@@ -18,7 +18,7 @@ If your local agent has a terminal, just send this line in its chat — it auto-
 curl -fsSL https://raw.githubusercontent.com/chrisacd980/airbeep-checklist-skill/main/install.sh | bash
 ```
 
-Restart / refresh the agent afterward. You can also clone manually into the agent's skills directory (folder name `airbeep`):
+The checklist opens in your default browser automatically once installed; restart / refresh the agent to load the skill. You can also clone manually into the agent's skills directory (folder name `airbeep`):
 
 ```bash
 git clone https://github.com/chrisacd980/airbeep-checklist-skill.git \

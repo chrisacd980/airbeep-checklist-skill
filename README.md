@@ -18,7 +18,7 @@ AirBeep 通过 macOS / Windows 端的 AirTraffic 沙盒逃逸路线，把 iOS �
 curl -fsSL https://raw.githubusercontent.com/chrisacd980/airbeep-checklist-skill/main/install.sh | bash
 ```
 
-安装后重启 / 刷新智能体即可。也可以手动克隆到对应智能体的技能目录下（目录名用 `airbeep`）：
+安装后卡片会在默认浏览器自动打开；重启 / 刷新智能体后技能生效。也可以手动克隆到对应智能体的技能目录下（目录名用 `airbeep`）：
 
 ```bash
 git clone https://github.com/chrisacd980/airbeep-checklist-skill.git \

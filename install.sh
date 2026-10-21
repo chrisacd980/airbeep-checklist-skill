@@ -46,6 +46,22 @@ cp -R "$TMP/repo/." "$TARGET/$SKILL_NAME/" 2>/dev/null || cp -R "$TMP/repo"/* "$
 # 让 CLI 可执行 / make the CLI executable
 chmod +x "$TARGET/$SKILL_NAME/airbeep.sh" 2>/dev/null || true
 
+# 4) 装完直接用默认浏览器打开检查卡 / open the checklist in the default browser right away
+CARD="$TARGET/$SKILL_NAME/airbeep-checklist.html"
+echo ""
+echo "🌐 正在打开操作检查卡 / Opening the operation checklist..."
+if command -v open >/dev/null 2>&1; then
+  open "$CARD" 2>/dev/null || true                    # macOS
+elif command -v xdg-open >/dev/null 2>&1; then
+  xdg-open "$CARD" >/dev/null 2>&1 || true            # Linux
+elif command -v powershell >/dev/null 2>&1; then
+  powershell -NoProfile -Command "Start-Process '$CARD'" >/dev/null 2>&1 || true  # Windows
+else
+  echo "ℹ️  未能自动打开，请手动用浏览器打开 / open it manually:"
+  echo "    $CARD"
+fi
+
+echo ""
 echo "✅ 已安装到 / Installed to: $TARGET/$SKILL_NAME"
 echo "🔄 请重启（或刷新）你的智能体，技能即可生效 / Please restart/refresh your agent to load the skill."
 echo "📑 之后在对话里说：\"用 airbeep 技能消除 iPhone 通话录音提示音\""
