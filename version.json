@@ -1,6 +1,6 @@
 {
-  "version": "1.0.1",
+  "version": "1.0.2",
   "date": "2026-10-21",
-  "notes_zh": "新增版本更新提醒：打开卡片时自动检查最新版，有新版本会弹窗说明，并可一键复制更新命令。",
-  "notes_en": "Added update reminders: the card now auto-checks for new versions on open, pops up with release notes, and offers one-click copy of the update command."
+  "notes_zh": "嵌入爱思助手最新版本信息（Win V9.21 / Mac V9.07）与运行主机连接步骤，检查卡开发者模式小科普内新增爱思助手官网下载跳转链接。",
+  "notes_en": "Embedded the latest i4Tools version info (Win V9.21 / Mac V9.07) and host-connection steps; added an official-site download link in the card's Developer Mode tip."
 }

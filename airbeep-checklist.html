@@ -136,6 +136,8 @@
   .tips li .step { font-weight: 600; color: var(--text); }
   .tips li.active { background: #eef6fc; border-left-color: var(--accent); }
   .tips li.active .step { color: var(--accent); }
+  .i4link { display:inline-block; margin-top:6px; color:var(--accent); font-weight:600; text-decoration:none; border-bottom:1px dashed var(--accent); cursor:pointer; }
+  .i4link:hover { filter:brightness(1.15); }
   .bar { display: flex; justify-content: space-between; align-items: center; margin-top: 16px; }
   .progress { font-size: 13px; color: var(--muted); }
   .reset {
@@ -323,7 +325,7 @@ winget install AppleiTunes</span></div>
       tipsTitle: "📖 小科普 · 每一步在做什么",
       tips: [
         '<span class="step">ios支持版本：</span>到 GitHub 仓库看 README 的 Requirements 支持区间，确认你的系统版本在列——不在列就千万别升级系统。',
-        '<span class="step">开发者模式：</span>先连一次电脑让入口出现，再到「设置 → 隐私与安全性 → 开发者模式」打开开关 → 点「重新启动」→ 开机后点「打开」并输入锁屏密码。<br><span class="step">爱思助手路线：</span>爱思助手 → app 上方「工具箱」→ 虚拟定位 → 任意尝试定位 → 手机进入「设置 → 隐私与安全性 → 开发者模式」。',
+        '<span class="step">开发者模式：</span>先连一次电脑让入口出现，再到「设置 → 隐私与安全性 → 开发者模式」打开开关 → 点「重新启动」→ 开机后点「打开」并输入锁屏密码。<br><span class="step">爱思助手路线：</span>爱思助手 → app 上方「工具箱」→ 虚拟定位 → 任意尝试定位 → 手机进入「设置 → 隐私与安全性 → 开发者模式」。<br><a class="i4link" href="https://www.i4.cn/" target="_blank" rel="noopener">⬇️ 还没装爱思助手？点此到官网下载安装（Win V9.21 / Mac V9.07，电脑端自带驱动组件）</a>',
         '<span class="step">执行AirBeep：</span>打开 AirBeep 拨动开关即把录音提示音换成等长静音，操作中别退出 app，替换完会自动留存原件备份。',
         '<span class="step">自行通话测试：</span>拨一通电话并开启录音，听听起止提示音是否已经消失（静音成功）。',
         '<span class="step">重启后测试：</span>重启手机后再打一通电话，确认静音在重启后没有失效。',
@@ -383,7 +385,7 @@ winget install AppleiTunes</span></div>
       tipsTitle: "📖 Tips · What each step does",
       tips: [
         '<span class="step">iOS support:</span> Check the Requirements range in the repo README and make sure your system version is listed — never upgrade if it isn\u2019t.',
-        '<span class="step">Developer Mode:</span> Connect to a computer once so the entry appears, then Settings → Privacy & Security → Developer Mode → Restart → enter passcode.<br><span class="step">i4Tools route:</span> i4Tools → Toolbox → Virtual Location → fake any location → on the phone open Settings → Privacy & Security → Developer Mode.',
+        '<span class="step">Developer Mode:</span> Connect to a computer once so the entry appears, then Settings → Privacy & Security → Developer Mode → Restart → enter passcode.<br><span class="step">i4Tools route:</span> i4Tools → Toolbox → Virtual Location → fake any location → on the phone open Settings → Privacy & Security → Developer Mode.<br><a class="i4link" href="https://www.i4.cn/" target="_blank" rel="noopener">⬇️ Don\u2019t have i4Tools yet? Download it from the official site (Win V9.21 / Mac V9.07; the desktop app bundles its own drivers)</a>',
         '<span class="step">Run AirBeep:</span> Flip the switch to swap tones for equal-length silence; don\u2019t leave the app mid-operation; originals are backed up automatically.',
         '<span class="step">Call test:</span> Make a call with recording on and listen whether the start/stop tones are gone.',
         '<span class="step">Reboot test:</span> Reboot and call again to confirm silence still works.',
