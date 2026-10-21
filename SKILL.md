@@ -89,7 +89,8 @@ airlift.py replace /var/mobile/Library/CallServices/Greetings/default/StopDisclo
 curl -fsSL https://raw.githubusercontent.com/chrisacd980/airbeep-checklist-skill/main/install.sh | bash
 ```
 
-- 安装后重启（或刷新）智能体，说「用 airbeep 技能消除 iPhone 通话录音提示音」即可调用；也可手动 `git clone` 本仓库到对应技能目录。
+- 安装后重启（或刷新）智能体，说「用 airbeep 技能消除 iPhone 通话录音提示音」即可调用；安装完成后卡片会自动在默认浏览器打开。也可手动 `git clone` 本仓库到对应技能目录。
+- **图形化安装包**（适合不想用命令行的用户，见 [Releases](https://github.com/chrisacd980/airbeep-checklist-skill/releases)）：macOS 下载 `AirBeep-macOS.dmg`（双击 app 即打开检查卡）；Windows 下载 `AirBeep-Setup.exe`（双击安装，自动创建桌面 / 开始菜单快捷方式打开卡片）。
 - 纯云端聊天机器人（如豆包网页版 / Kimi 网页版）无法执行 Shell，但仍可手动 `git clone` 本仓库、按 README 使用卡片与脚本——知识层对所有智能体通用，真机改写仅限本机智能体。
 
 ## 版本监测

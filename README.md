@@ -25,6 +25,11 @@ git clone https://github.com/chrisacd980/airbeep-checklist-skill.git \
   <你的智能体技能目录>/airbeep
 ```
 
+### 图形化安装包（Releases）
+不想用命令行？到 [Releases](https://github.com/chrisacd980/airbeep-checklist-skill/releases) 下载：
+- **macOS**：`AirBeep-macOS.dmg` —— 双击 app 即在默认浏览器打开检查卡；
+- **Windows**：`AirBeep-Setup.exe` —— 双击安装，自动创建桌面 / 开始菜单快捷方式打开卡片。
+
 ## 使用
 
 直接用浏览器打开技能目录里的检查卡（右上角可切换 中文 / EN）：

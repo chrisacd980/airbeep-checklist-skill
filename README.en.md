@@ -25,6 +25,11 @@ git clone https://github.com/chrisacd980/airbeep-checklist-skill.git \
   <your-agents-skills-dir>/airbeep
 ```
 
+### GUI installers (Releases)
+Prefer no command line? Grab them from [Releases](https://github.com/chrisacd980/airbeep-checklist-skill/releases):
+- **macOS**: `AirBeep-macOS.dmg` — double-click the app to open the checklist in your default browser;
+- **Windows**: `AirBeep-Setup.exe` — double-click to install; desktop / Start Menu shortcuts open the card.
+
 ## Usage
 
 Open the checklist in a browser (use the 中文 / EN toggle at the top right):
